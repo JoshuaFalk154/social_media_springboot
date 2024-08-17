@@ -3,10 +3,12 @@ package com.social_media_springboot.social_media_springboot.controllers;
 import com.social_media_springboot.social_media_springboot.DTO.CreatePostDTO;
 import com.social_media_springboot.social_media_springboot.DTO.CreatePostResponseDTO;
 import com.social_media_springboot.social_media_springboot.DTO.RequestPostDTO;
+import com.social_media_springboot.social_media_springboot.DTO.UpdatePostDTO;
 import com.social_media_springboot.social_media_springboot.entities.Post;
 import com.social_media_springboot.social_media_springboot.entities.User;
 import com.social_media_springboot.social_media_springboot.services.PostService;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Request;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -50,7 +52,13 @@ public class PostController {
     ) {
         RequestPostDTO postDTO = postService.getPostById(currentUser, id);
         return ResponseEntity.ok(postDTO);
+    }
 
+    @PutMapping("/posts/{id}")
+    public ResponseEntity<RequestPostDTO> updatePost(@PathVariable Long id, @AuthenticationPrincipal User currentUser, @RequestBody UpdatePostDTO post) {
+        RequestPostDTO postDTO = postService.updatePostById(currentUser, id, post);
+
+        return ResponseEntity.ok(postDTO);
     }
 
 
