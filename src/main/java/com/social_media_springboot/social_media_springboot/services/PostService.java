@@ -8,8 +8,10 @@ import com.social_media_springboot.social_media_springboot.repositories.PostRepo
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+//import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.security.access.AccessDeniedException;
 
 @Service
 @RequiredArgsConstructor
@@ -74,13 +76,17 @@ public class PostService {
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + id));
 
         if (!isOwner(currentUser, post)) {
-            throw new ResourceNotFoundException("User is not the owner of the post");
+            throw new AccessDeniedException("User is not the owner of the post");
         }
 
         return postToRequestPostDTO(post);
     }
 
     public boolean isOwner(User user, Post post) {
-        return post.getOwner().equals(user);
+
+        return user.equals(post.getOwner());
+//        User postOwner = post.getOwner();
+//
+//        return postOwner.getId().equals(user.getId());
     }
 }

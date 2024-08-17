@@ -49,7 +49,6 @@ public class PostController {
 
     ) {
         RequestPostDTO postDTO = postService.getPostById(currentUser, id);
-
         return ResponseEntity.ok(postDTO);
 
     }

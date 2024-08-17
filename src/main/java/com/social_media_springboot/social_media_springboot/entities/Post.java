@@ -8,6 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name="posts")
@@ -36,7 +37,7 @@ public class Post {
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
     private List<Like> likes;
 
     @CreationTimestamp
@@ -48,7 +49,16 @@ public class Post {
     @Column(name = "updated_at")
     private Date updatedAt;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Post post = (Post) o;
+        return Objects.equals(id, post.id);
+    }
 
-
-
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }
