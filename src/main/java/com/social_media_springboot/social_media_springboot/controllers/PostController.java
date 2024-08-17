@@ -41,4 +41,18 @@ public class PostController {
 
         return ResponseEntity.ok(result);
     }
+
+    @GetMapping("/posts/{id}")
+    public ResponseEntity<RequestPostDTO> getPostById(
+            @PathVariable Long id,
+            @AuthenticationPrincipal User currentUser
+
+    ) {
+        RequestPostDTO postDTO = postService.getPostById(currentUser, id);
+
+        return ResponseEntity.ok(postDTO);
+
+    }
+
+
 }

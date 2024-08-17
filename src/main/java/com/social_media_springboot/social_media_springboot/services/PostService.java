@@ -3,6 +3,7 @@ package com.social_media_springboot.social_media_springboot.services;
 import com.social_media_springboot.social_media_springboot.DTO.*;
 import com.social_media_springboot.social_media_springboot.entities.Post;
 import com.social_media_springboot.social_media_springboot.entities.User;
+import com.social_media_springboot.social_media_springboot.exceptions.ResourceNotFoundException;
 import com.social_media_springboot.social_media_springboot.repositories.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -66,5 +67,20 @@ public class PostService {
                 .filter(post -> title.map(post.getTitle()::equals).orElse(true))
                 .map(this::postToRequestPostDTO)
                 .toList();
+    }
+
+    public RequestPostDTO getPostById(User currentUser, Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + id));
+
+        if (!isOwner(currentUser, post)) {
+            throw new ResourceNotFoundException("User is not the owner of the post");
+        }
+
+        return postToRequestPostDTO(post);
+    }
+
+    public boolean isOwner(User user, Post post) {
+        return post.getOwner().equals(user);
     }
 }
