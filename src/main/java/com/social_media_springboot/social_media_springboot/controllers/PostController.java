@@ -2,6 +2,7 @@ package com.social_media_springboot.social_media_springboot.controllers;
 
 import com.social_media_springboot.social_media_springboot.DTO.CreatePostDTO;
 import com.social_media_springboot.social_media_springboot.DTO.CreatePostResponseDTO;
+import com.social_media_springboot.social_media_springboot.DTO.RequestPostDTO;
 import com.social_media_springboot.social_media_springboot.entities.Post;
 import com.social_media_springboot.social_media_springboot.entities.User;
 import com.social_media_springboot.social_media_springboot.services.PostService;
@@ -10,11 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -24,11 +24,24 @@ public class PostController {
 
     private final PostService postService;
 
-    @PostMapping("/post")
+    @PostMapping("/posts")
     public ResponseEntity<CreatePostResponseDTO> createPost(@RequestBody CreatePostDTO createPostDTO, @AuthenticationPrincipal User currentUser) {
         CreatePostResponseDTO postResponseDTO = postService.createPost(createPostDTO, currentUser);
 
         return ResponseEntity.ok(postResponseDTO);
-
     }
+
+    @GetMapping("/api/posts")
+    public ResponseEntity<List<RequestPostDTO>> queryPosts(
+            @RequestParam("post_id") Optional<Long> postId,
+            @RequestParam("title") Optional<String> title,
+            @AuthenticationPrincipal User currentUser
+    ) {
+        List<RequestPostDTO> result = postService.queryPosts(postId, title, currentUser);
+
+        // TODO
+        return null;
+    }
+
+
 }
