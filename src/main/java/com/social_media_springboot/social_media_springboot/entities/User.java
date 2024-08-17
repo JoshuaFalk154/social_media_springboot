@@ -1,6 +1,7 @@
 package com.social_media_springboot.social_media_springboot.entities;
 
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -18,7 +19,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Table(name="users")
-
 public class User implements UserDetails {
 
     @Id
@@ -34,7 +34,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "owner")
+    @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
     private List<Post> posts;
 
     @OneToMany(mappedBy = "user")

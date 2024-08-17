@@ -31,7 +31,7 @@ public class PostController {
         return ResponseEntity.ok(postResponseDTO);
     }
 
-    @GetMapping("/api/posts")
+    @GetMapping("/posts")
     public ResponseEntity<List<RequestPostDTO>> queryPosts(
             @RequestParam("post_id") Optional<Long> postId,
             @RequestParam("title") Optional<String> title,
@@ -39,9 +39,6 @@ public class PostController {
     ) {
         List<RequestPostDTO> result = postService.queryPosts(postId, title, currentUser);
 
-        // TODO
-        return null;
+        return ResponseEntity.ok(result);
     }
-
-
 }
