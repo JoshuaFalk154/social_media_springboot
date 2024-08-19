@@ -20,7 +20,7 @@ public class RequestPostDTO extends PostDTO{
     private Long id;
     private boolean isPublic;
     private UserDTO owner;
-    // private List<Like> likes;
+    private List<RequestLikeDTO> likes;
     private Date createdAt;
     private Date updatedAt;
 }

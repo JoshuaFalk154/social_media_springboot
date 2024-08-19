@@ -1,6 +1,5 @@
 package com.social_media_springboot.social_media_springboot.DTO;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +11,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class LikeDTO {
-    private Long postId;
+public class UserBasicDTO extends UserDTO {
+    private Long Id;
 }

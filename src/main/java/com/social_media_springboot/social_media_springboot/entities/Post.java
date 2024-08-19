@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -38,7 +39,7 @@ public class Post {
     private User owner;
 
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
-    private List<Like> likes;
+    private List<Like> likes = new ArrayList<>();
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
@@ -60,5 +61,9 @@ public class Post {
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
+    }
+
+    public void addLike(Like like) {
+        likes.add(like);
     }
 }

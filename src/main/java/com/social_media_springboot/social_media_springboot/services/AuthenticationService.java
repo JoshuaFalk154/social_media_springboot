@@ -2,6 +2,7 @@ package com.social_media_springboot.social_media_springboot.services;
 
 import com.social_media_springboot.social_media_springboot.DTO.LoginUserDTO;
 import com.social_media_springboot.social_media_springboot.DTO.RegisterUserDTO;
+import com.social_media_springboot.social_media_springboot.DTO.UserBasicDTO;
 import com.social_media_springboot.social_media_springboot.entities.User;
 import com.social_media_springboot.social_media_springboot.exceptions.ResourceNotFoundException;
 import com.social_media_springboot.social_media_springboot.repositories.UserRepository;
@@ -45,5 +46,12 @@ public class AuthenticationService {
     public User getUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + "not found"));
+    }
+
+    public UserBasicDTO userToUserBasicDTO(User user) {
+        return UserBasicDTO.builder()
+                .email(user.getEmail())
+                .Id(user.getId())
+                .build();
     }
 }

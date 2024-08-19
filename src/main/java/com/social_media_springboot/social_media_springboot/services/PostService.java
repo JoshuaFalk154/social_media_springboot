@@ -1,6 +1,7 @@
 package com.social_media_springboot.social_media_springboot.services;
 
 import com.social_media_springboot.social_media_springboot.DTO.*;
+import com.social_media_springboot.social_media_springboot.entities.Like;
 import com.social_media_springboot.social_media_springboot.entities.Post;
 import com.social_media_springboot.social_media_springboot.entities.User;
 import com.social_media_springboot.social_media_springboot.exceptions.ResourceNotFoundException;
@@ -8,7 +9,7 @@ import com.social_media_springboot.social_media_springboot.repositories.PostRepo
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-//import java.nio.file.AccessDeniedException;
+
 import java.util.List;
 import java.util.Optional;
 import org.springframework.security.access.AccessDeniedException;
@@ -17,7 +18,12 @@ import org.springframework.security.access.AccessDeniedException;
 @RequiredArgsConstructor
 public class PostService {
 
+
     private final PostRepository postRepository;
+    private final AuthenticationService authenticationService;
+
+
+    private final LikeService likeService;
 
 
     public CreatePostResponseDTO createPost(CreatePostDTO createPostDTO, User currentUser) {
@@ -50,6 +56,9 @@ public class PostService {
                 .content(post.getContent())
                 .isPublic(post.isPublic())
                 .owner(userToUserDTO(post.getOwner()))
+                // TODO
+                // .likes(post.getLikes().stream().map(likeService::likeToRequestLikeDTO).toList())
+                .likes(post.getLikes().stream().map(like -> likeService.likeToRequestLikeDTO(like.getUser(), postToPostBasicDTO(like.getPost()))).toList())
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())
                 .build();
@@ -99,21 +108,39 @@ public class PostService {
         postRepository.delete(post);
     }
 
-    public void likePost(LikeDTO likeDTO) {
-        Long userId = likeDTO.getOwnerId();
+    public void likePost(LikeDTO likeDTO, User user) {
         Long postId = likeDTO.getPostId();
+        Post post = validatePostExistenceAndOwnership(user, postId);
 
+        Like like = Like.builder()
+                        .user(user)
+                        .post(post)
+                        .build();
 
+        likeService.addLike(like);
+
+        user.addLike(like);
+        post.addLike(like);
 
     }
 
     public Post validatePostExistenceAndOwnership(User user, Long id) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + id));
+//        Post post = postRepository.findById(id)
+//                .orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + id));
+
+        Post post = postRepository.findById(id).get();
         if (!isOwner(user, post)) {
             throw new AccessDeniedException("User is not the owner of the post");
         }
         return post;
+    }
+
+    public PostBasicDTO postToPostBasicDTO(Post post) {
+        return PostBasicDTO.builder()
+                .title(post.getTitle())
+                .content(post.getContent())
+                .Id(post.getId())
+                .build();
     }
 
 

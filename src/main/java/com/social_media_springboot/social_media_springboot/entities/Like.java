@@ -1,6 +1,10 @@
 package com.social_media_springboot.social_media_springboot.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -9,6 +13,10 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "likes")
+@Builder
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Like {
 
     @Id
@@ -44,4 +52,5 @@ public class Like {
     public int hashCode() {
         return Objects.hashCode(id);
     }
+
 }

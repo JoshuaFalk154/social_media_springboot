@@ -70,7 +70,12 @@ public class PostController {
             @RequestBody LikeDTO likeDTO,
             @AuthenticationPrincipal User currentUser
             ) {
-        postService.likePost(likeDTO);
+        postService.likePost(likeDTO, currentUser);
+
+
+
+       return ResponseEntity.ok("You liked Post with id " + likeDTO.getPostId());
+        //return ResponseEntity.ok("alles gut");
     }
 
 }
