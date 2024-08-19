@@ -99,6 +99,14 @@ public class PostService {
         postRepository.delete(post);
     }
 
+    public void likePost(LikeDTO likeDTO) {
+        Long userId = likeDTO.getOwnerId();
+        Long postId = likeDTO.getPostId();
+
+
+
+    }
+
     public Post validatePostExistenceAndOwnership(User user, Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + id));
@@ -107,6 +115,9 @@ public class PostService {
         }
         return post;
     }
+
+
+
 
 
 }

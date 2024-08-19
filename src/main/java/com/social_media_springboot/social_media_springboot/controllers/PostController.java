@@ -1,9 +1,6 @@
 package com.social_media_springboot.social_media_springboot.controllers;
 
-import com.social_media_springboot.social_media_springboot.DTO.CreatePostDTO;
-import com.social_media_springboot.social_media_springboot.DTO.CreatePostResponseDTO;
-import com.social_media_springboot.social_media_springboot.DTO.RequestPostDTO;
-import com.social_media_springboot.social_media_springboot.DTO.UpdatePostDTO;
+import com.social_media_springboot.social_media_springboot.DTO.*;
 import com.social_media_springboot.social_media_springboot.entities.Post;
 import com.social_media_springboot.social_media_springboot.entities.User;
 import com.social_media_springboot.social_media_springboot.services.PostService;
@@ -66,6 +63,14 @@ public class PostController {
         postService.deletePost(currentUser, id);
 
         return ResponseEntity.ok("Post with id " + id + " successfully deleted");
+    }
+
+    @PostMapping("/likes")
+    public ResponseEntity<String> likePost(
+            @RequestBody LikeDTO likeDTO,
+            @AuthenticationPrincipal User currentUser
+            ) {
+        postService.likePost(likeDTO);
     }
 
 }

@@ -3,6 +3,7 @@ package com.social_media_springboot.social_media_springboot.services;
 import com.social_media_springboot.social_media_springboot.DTO.LoginUserDTO;
 import com.social_media_springboot.social_media_springboot.DTO.RegisterUserDTO;
 import com.social_media_springboot.social_media_springboot.entities.User;
+import com.social_media_springboot.social_media_springboot.exceptions.ResourceNotFoundException;
 import com.social_media_springboot.social_media_springboot.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,5 +40,10 @@ public class AuthenticationService {
 
         return userRepository.findByEmail(loginUserDto.getEmail())
                 .orElseThrow();
+    }
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + "not found"));
     }
 }
