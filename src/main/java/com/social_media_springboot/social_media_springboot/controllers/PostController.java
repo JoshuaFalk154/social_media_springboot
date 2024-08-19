@@ -73,9 +73,10 @@ public class PostController {
         postService.likePost(likeDTO, currentUser);
 
 
+        // TODO
+        // check if Post already liked from user
 
        return ResponseEntity.ok("You liked Post with id " + likeDTO.getPostId());
-        //return ResponseEntity.ok("alles gut");
     }
 
 }

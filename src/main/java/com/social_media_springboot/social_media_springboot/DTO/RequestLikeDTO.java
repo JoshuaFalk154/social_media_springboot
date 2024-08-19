@@ -8,6 +8,6 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 public class RequestLikeDTO  {
-    private UserBasicDTO userBasicDTO;
-    private PostBasicDTO postBasicDTO;
+    private UserBasicDTO user;
+    private PostBasicDTO post;
 }
