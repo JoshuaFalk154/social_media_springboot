@@ -61,5 +61,11 @@ public class PostController {
         return ResponseEntity.ok(postDTO);
     }
 
+    @DeleteMapping("/posts/{id}")
+    public ResponseEntity<String> deletePost(@PathVariable Long id, @RequestBody UpdatePostDTO post, @AuthenticationPrincipal User currentUser) {
+        postService.deletePost(currentUser, id);
+
+        return ResponseEntity.ok("Post with id " + id + " successfully deleted");
+    }
 
 }

@@ -93,6 +93,12 @@ public class PostService {
         return postToRequestPostDTO(post);
     }
 
+    public void deletePost(User currentUser, Long id) {
+        Post post = validatePostExistenceAndOwnership(currentUser, id);
+
+        postRepository.delete(post);
+    }
+
     public Post validatePostExistenceAndOwnership(User user, Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + id));
@@ -101,4 +107,6 @@ public class PostService {
         }
         return post;
     }
+
+
 }
