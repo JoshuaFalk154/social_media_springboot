@@ -5,14 +5,18 @@ import com.social_media_springboot.social_media_springboot.entities.Like;
 import com.social_media_springboot.social_media_springboot.entities.Post;
 import com.social_media_springboot.social_media_springboot.entities.User;
 import com.social_media_springboot.social_media_springboot.exceptions.ResourceNotFoundException;
+import com.social_media_springboot.social_media_springboot.repositories.LikeRepository;
 import com.social_media_springboot.social_media_springboot.repositories.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
 import java.util.Optional;
 import org.springframework.security.access.AccessDeniedException;
+
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +25,9 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final AuthenticationService authenticationService;
+
+    // TODO test
+    private final LikeRepository likeRepository;
 
 
     private final LikeService likeService;
@@ -108,27 +115,31 @@ public class PostService {
         postRepository.delete(post);
     }
 
-    public void likePost(LikeDTO likeDTO, User user) {
+    @Transactional
+    public void toggleLikePost(LikeDTO likeDTO, User user) {
         Long postId = likeDTO.getPostId();
         Post post = validatePostExistenceAndOwnership(user, postId);
 
-        Like like = Like.builder()
-                        .user(user)
-                        .post(post)
-                        .build();
+        Optional<Like> existingLikeOptional = likeService.findByUserAndPost(user, post);
 
-        likeService.addLike(like);
+        if (existingLikeOptional.isPresent()) {
+            Like existingLike = existingLikeOptional.get();
+            //likeService.deleteLike(existingLike);
+            likeRepository.delete(existingLike);
 
-        user.addLike(like);
-        post.addLike(like);
-
+        } else {
+            Like newLike = Like.builder()
+                    .user(user)
+                    .post(post)
+                    .build();
+            likeService.addLike(newLike);
+        }
     }
 
     public Post validatePostExistenceAndOwnership(User user, Long id) {
-//        Post post = postRepository.findById(id)
-//                .orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + id));
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + id));
 
-        Post post = postRepository.findById(id).get();
         if (!isOwner(user, post)) {
             throw new AccessDeniedException("User is not the owner of the post");
         }
@@ -142,9 +153,5 @@ public class PostService {
                 .Id(post.getId())
                 .build();
     }
-
-
-
-
 
 }

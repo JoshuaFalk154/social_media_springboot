@@ -50,7 +50,7 @@ public class Like {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hash(id);
     }
 
 }

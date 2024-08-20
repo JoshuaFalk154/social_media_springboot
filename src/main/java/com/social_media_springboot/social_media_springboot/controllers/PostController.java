@@ -1,15 +1,11 @@
 package com.social_media_springboot.social_media_springboot.controllers;
 
 import com.social_media_springboot.social_media_springboot.DTO.*;
-import com.social_media_springboot.social_media_springboot.entities.Post;
 import com.social_media_springboot.social_media_springboot.entities.User;
 import com.social_media_springboot.social_media_springboot.services.PostService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Request;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -70,11 +66,7 @@ public class PostController {
             @RequestBody LikeDTO likeDTO,
             @AuthenticationPrincipal User currentUser
             ) {
-        postService.likePost(likeDTO, currentUser);
-
-
-        // TODO
-        // check if Post already liked from user
+        postService.toggleLikePost(likeDTO, currentUser);
 
        return ResponseEntity.ok("You liked Post with id " + likeDTO.getPostId());
     }
