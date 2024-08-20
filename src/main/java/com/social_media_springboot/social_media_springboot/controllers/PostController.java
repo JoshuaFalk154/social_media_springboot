@@ -65,10 +65,14 @@ public class PostController {
     public ResponseEntity<String> likePost(
             @RequestBody LikeDTO likeDTO,
             @AuthenticationPrincipal User currentUser
-            ) {
+    ) {
         postService.toggleLikePost(likeDTO, currentUser);
 
-       return ResponseEntity.ok("You liked Post with id " + likeDTO.getPostId());
+        if (postService.isPostLikedByUser(likeDTO.getPostId(), currentUser)) {
+            return ResponseEntity.ok("You liked Post with id " + likeDTO.getPostId());
+        } else {
+            return ResponseEntity.ok("You unliked Post with id " + likeDTO.getPostId());
+        }
     }
 
 }

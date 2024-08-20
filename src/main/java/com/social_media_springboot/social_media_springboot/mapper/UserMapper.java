@@ -1,0 +1,17 @@
+package com.social_media_springboot.social_media_springboot.mapper;
+
+import com.social_media_springboot.social_media_springboot.DTO.UserBasicDTO;
+import com.social_media_springboot.social_media_springboot.entities.User;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class UserMapper {
+    public UserBasicDTO userToUserBasicDTO(User user) {
+        return UserBasicDTO.builder()
+                .email(user.getEmail())
+                .Id(user.getId())
+                .build();
+    }
+}

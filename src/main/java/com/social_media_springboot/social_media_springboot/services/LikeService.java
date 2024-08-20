@@ -5,6 +5,7 @@ import com.social_media_springboot.social_media_springboot.DTO.RequestLikeDTO;
 import com.social_media_springboot.social_media_springboot.entities.Like;
 import com.social_media_springboot.social_media_springboot.entities.Post;
 import com.social_media_springboot.social_media_springboot.entities.User;
+import com.social_media_springboot.social_media_springboot.mapper.UserMapper;
 import com.social_media_springboot.social_media_springboot.repositories.LikeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,15 +18,8 @@ public class LikeService {
 
     private final AuthenticationService authenticationService;
     private final LikeRepository likeRepository;
+    private final UserMapper userMapper;
 
-
-
-    public RequestLikeDTO likeToRequestLikeDTO(User user , PostBasicDTO postBasicDTO) {
-        return RequestLikeDTO.builder()
-                .user(authenticationService.userToUserBasicDTO(user))
-                .post(postBasicDTO)
-                .build();
-    }
 
     public void validateUserNotAlreadyLikedPost(Like like) {
         if (likeRepository.findByUserAndPost(like.getUser(), like.getPost()).isPresent()) {

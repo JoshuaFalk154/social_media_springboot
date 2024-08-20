@@ -48,10 +48,5 @@ public class AuthenticationService {
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + "not found"));
     }
 
-    public UserBasicDTO userToUserBasicDTO(User user) {
-        return UserBasicDTO.builder()
-                .email(user.getEmail())
-                .Id(user.getId())
-                .build();
-    }
+
 }
