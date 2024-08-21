@@ -1,5 +1,6 @@
 package com.social_media_springboot.social_media_springboot.DTO;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,5 +13,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @SuperBuilder
 public class PostBasicDTO extends PostDTO {
+    @NotNull
     private Long Id;
 }

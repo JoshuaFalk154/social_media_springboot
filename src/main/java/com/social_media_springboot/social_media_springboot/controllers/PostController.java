@@ -3,6 +3,7 @@ package com.social_media_springboot.social_media_springboot.controllers;
 import com.social_media_springboot.social_media_springboot.DTO.*;
 import com.social_media_springboot.social_media_springboot.entities.User;
 import com.social_media_springboot.social_media_springboot.services.PostService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,7 +21,7 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/posts")
-    public ResponseEntity<CreatePostResponseDTO> createPost(@RequestBody CreatePostDTO createPostDTO, @AuthenticationPrincipal User currentUser) {
+    public ResponseEntity<CreatePostResponseDTO> createPost(@Valid  @RequestBody CreatePostDTO createPostDTO, @AuthenticationPrincipal User currentUser) {
         CreatePostResponseDTO postResponseDTO = postService.createPost(createPostDTO, currentUser);
 
         return ResponseEntity.ok(postResponseDTO);
@@ -48,14 +49,14 @@ public class PostController {
     }
 
     @PutMapping("/posts/{id}")
-    public ResponseEntity<RequestPostDTO> updatePost(@PathVariable Long id, @AuthenticationPrincipal User currentUser, @RequestBody UpdatePostDTO post) {
+    public ResponseEntity<RequestPostDTO> updatePost(@PathVariable Long id, @AuthenticationPrincipal User currentUser, @Valid @RequestBody UpdatePostDTO post) {
         RequestPostDTO postDTO = postService.updatePostById(currentUser, id, post);
 
         return ResponseEntity.ok(postDTO);
     }
 
     @DeleteMapping("/posts/{id}")
-    public ResponseEntity<String> deletePost(@PathVariable Long id, @RequestBody UpdatePostDTO post, @AuthenticationPrincipal User currentUser) {
+    public ResponseEntity<String> deletePost(@PathVariable Long id, @Valid @RequestBody UpdatePostDTO post, @AuthenticationPrincipal User currentUser) {
         postService.deletePost(currentUser, id);
 
         return ResponseEntity.ok("Post with id " + id + " successfully deleted");

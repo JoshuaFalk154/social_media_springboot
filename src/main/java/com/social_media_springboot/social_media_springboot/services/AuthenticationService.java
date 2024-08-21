@@ -28,6 +28,8 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(registerUserDTO.getPassword()))
                 .build();
 
+
+
         return userRepository.save(user);
     }
 
@@ -47,6 +49,7 @@ public class AuthenticationService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + "not found"));
     }
+
 
 
 }
