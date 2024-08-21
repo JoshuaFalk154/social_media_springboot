@@ -2,8 +2,8 @@ package com.social_media_springboot.social_media_springboot.repositories;
 
 import com.social_media_springboot.social_media_springboot.entities.Post;
 import com.social_media_springboot.social_media_springboot.entities.User;
+import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
@@ -21,28 +21,18 @@ public class UserRepositoryTest {
     @Autowired
     private PostRepository postRepository;
 
-    private User currentUser;
+    @Autowired
+    private EntityManager entityManager;
 
-    @BeforeEach
-    public void setup() {
+
+    @Test
+    public void UserRepository_Save_ReturnSavedUser() {
         User user = User.builder()
                 .username("falk")
                 .email("falk@gmail.com")
                 .password("password")
                 .build();
-
-        currentUser = userRepository.save(user);
-    }
-
-    @Test
-    public void UserRepository_Save_ReturnSavedUser() {
-//        User user = User.builder()
-//                .username("falk")
-//                .email("falk@gmail.com")
-//                .password("password")
-//                .build();
-
-        //User currentUser = userRepository.save(user);
+        User currentUser = userRepository.save(user);
 
         Post post = Post.builder()
                 .title("Test Post")
@@ -50,13 +40,11 @@ public class UserRepositoryTest {
                 .owner(currentUser)
                 .isPublic(true)
                 .build();
-
         postRepository.save(post);
 
-        User findUser = userRepository.findById(1L).get();
 
-
-
+        entityManager.flush();
+        entityManager.refresh(currentUser);
 
         Assertions.assertThat(currentUser).isNotNull();
         Assertions.assertThat(currentUser.getId()).isEqualTo(1);

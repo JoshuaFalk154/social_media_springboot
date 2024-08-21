@@ -35,6 +35,7 @@ public class PostService {
 
         Post post = postRepository.save(createPost);
 
+
         return postMapper.postToCreatePostResponseDTO(post);
     }
 
