@@ -4,7 +4,7 @@ import com.social_media_springboot.social_media_springboot.DTO.LoginResponse;
 import com.social_media_springboot.social_media_springboot.DTO.LoginUserDTO;
 import com.social_media_springboot.social_media_springboot.DTO.RegisterUserDTO;
 import com.social_media_springboot.social_media_springboot.entities.User;
-import com.social_media_springboot.social_media_springboot.services.AuthenticationService;
+import com.social_media_springboot.social_media_springboot.services.UserService;
 import com.social_media_springboot.social_media_springboot.services.JwtService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,19 +19,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthenticationController {
 
-    private final AuthenticationService authenticationService;
+    private final UserService userService;
     private final JwtService jwtService;
 
     @PostMapping("/signup")
     public ResponseEntity<User> register(@Valid @RequestBody RegisterUserDTO registerUserDTO) {
-        User registeredUser = authenticationService.signup(registerUserDTO);
+        User registeredUser = userService.signup(registerUserDTO);
 
         return ResponseEntity.ok(registeredUser);
     }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@Valid @RequestBody LoginUserDTO loginUserDto) {
-        User authenticatedUser = authenticationService.authenticate(loginUserDto);
+        User authenticatedUser = userService.authenticate(loginUserDto);
 
         String jwtToken = jwtService.generateToken(authenticatedUser);
 

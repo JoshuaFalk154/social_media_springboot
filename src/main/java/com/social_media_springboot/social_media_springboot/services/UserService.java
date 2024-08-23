@@ -2,7 +2,6 @@ package com.social_media_springboot.social_media_springboot.services;
 
 import com.social_media_springboot.social_media_springboot.DTO.LoginUserDTO;
 import com.social_media_springboot.social_media_springboot.DTO.RegisterUserDTO;
-import com.social_media_springboot.social_media_springboot.DTO.UserBasicDTO;
 import com.social_media_springboot.social_media_springboot.entities.User;
 import com.social_media_springboot.social_media_springboot.exceptions.ResourceNotFoundException;
 import com.social_media_springboot.social_media_springboot.repositories.UserRepository;
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AuthenticationService {
+public class UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
@@ -27,7 +26,6 @@ public class AuthenticationService {
                 .email(registerUserDTO.getEmail())
                 .password(passwordEncoder.encode(registerUserDTO.getPassword()))
                 .build();
-
 
 
         return userRepository.save(user);
@@ -49,7 +47,6 @@ public class AuthenticationService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + "not found"));
     }
-
 
 
 }

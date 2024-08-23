@@ -62,18 +62,18 @@ public class PostController {
         return ResponseEntity.ok("Post with id " + id + " successfully deleted");
     }
 
-    @PostMapping("/likes")
-    public ResponseEntity<String> likePost(
-            @RequestBody LikeDTO likeDTO,
-            @AuthenticationPrincipal User currentUser
-    ) {
-        postService.toggleLikePost(likeDTO, currentUser);
-
-        if (postService.isPostLikedByUser(likeDTO.getPostId(), currentUser)) {
-            return ResponseEntity.ok("You liked Post with id " + likeDTO.getPostId());
-        } else {
-            return ResponseEntity.ok("You unliked Post with id " + likeDTO.getPostId());
-        }
-    }
+//    @PostMapping("/likes")
+//    public ResponseEntity<String> likePost(
+//            @RequestBody LikeDTO likeDTO,
+//            @AuthenticationPrincipal User currentUser
+//    ) {
+//        postService.toggleLikePost(likeDTO, currentUser);
+//
+//        if (postService.isPostLikedByUser(likeDTO.getPostId(), currentUser)) {
+//            return ResponseEntity.ok("You liked Post with id " + likeDTO.getPostId());
+//        } else {
+//            return ResponseEntity.ok("You unliked Post with id " + likeDTO.getPostId());
+//        }
+//    }
 
 }

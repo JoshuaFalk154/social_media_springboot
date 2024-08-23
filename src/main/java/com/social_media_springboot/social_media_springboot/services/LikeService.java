@@ -1,7 +1,5 @@
 package com.social_media_springboot.social_media_springboot.services;
 
-import com.social_media_springboot.social_media_springboot.DTO.PostBasicDTO;
-import com.social_media_springboot.social_media_springboot.DTO.RequestLikeDTO;
 import com.social_media_springboot.social_media_springboot.entities.Like;
 import com.social_media_springboot.social_media_springboot.entities.Post;
 import com.social_media_springboot.social_media_springboot.entities.User;
@@ -16,7 +14,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class LikeService {
 
-    private final AuthenticationService authenticationService;
+    private final UserService userService;
     private final LikeRepository likeRepository;
     private final UserMapper userMapper;
 
