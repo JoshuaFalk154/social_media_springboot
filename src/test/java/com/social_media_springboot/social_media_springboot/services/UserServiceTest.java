@@ -15,9 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.naming.AuthenticationException;
@@ -27,6 +26,7 @@ import static org.mockito.Mockito.*;
 import java.util.Optional;
 
 import static org.mockito.Mockito.when;
+
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -73,40 +73,51 @@ public class UserServiceTest {
         Assertions.assertThat(createdUser.getPassword()).isEqualTo(expectedUser.getPassword());
     }
 
-    @ParameterizedTest
-    @CsvSource({
-            "email1@gmail.com, password1",
-            "email2@gmail.com, password2"
-    })
-    public void UserService_AuthenticateValid_ReturnAuthenticatedUser(String email, String password) {
-        LoginUserDTO loginUserDTO = LoginUserDTO.builder()
-                .email(email)
-                .password(password)
-                .build();
+    @Test
+    public void UserService_AuthenticateValid_ReturnAuthenticatedUser() {
+        LoginUserDTO loginUserDTO = UserFactory.createValidLoginUserDTO();
         User expectedUser = User.builder()
                 .email(loginUserDTO.getEmail())
                 .password(loginUserDTO.getPassword())
                 .build();
 
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(expectedUser));
+        when(userRepository.findByEmail(loginUserDTO.getEmail())).thenReturn(Optional.of(expectedUser));
 
         User result = userService.authenticate(loginUserDTO);
 
         Assertions.assertThat(expectedUser).isEqualTo(result);
         verify(authenticationManager, times(1)).authenticate(any(UsernamePasswordAuthenticationToken.class));
-        verify(userRepository, times(1)).findByEmail(email);
+        verify(userRepository, times(1)).findByEmail(loginUserDTO.getEmail());
     }
 
-    @ParameterizedTest
-    @CsvSource({
-            "email1@gmail.com, password1",
-            "email2@gmail.com, password2"
-    })
-    public void UserService_AuthenticateInvalidUser_ThrowBadCredentialsException(String email, String password) {
-        LoginUserDTO loginUserDTO = LoginUserDTO.builder()
-                .email(email)
-                .password(password)
-                .build();
+    @Test
+    public void UserService_AuthenticateDisabledUser_ThrowBadCredentialsException() {
+        LoginUserDTO loginUserDTO = UserFactory.createValidLoginUserDTO();
+
+        doThrow(new DisabledException("User disabled"))
+                .when(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+
+        Assertions.assertThatThrownBy(() -> userService.authenticate(loginUserDTO))
+                .isInstanceOf(AccessDeniedException.class)
+                .hasMessage("User account is disabled.");
+    }
+
+    @Test
+    public void UserService_AuthenticateLockedUser_ThrowBadCredentialsException() {
+        LoginUserDTO loginUserDTO = UserFactory.createValidLoginUserDTO();
+
+        doThrow(new LockedException("User locked"))
+                .when(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+
+        Assertions.assertThatThrownBy(() -> userService.authenticate(loginUserDTO))
+                .isInstanceOf(AccessDeniedException.class)
+                .hasMessage("User account is locked.");
+    }
+
+
+    @Test
+    public void UserService_AuthenticateInvalidUser_ThrowBadCredentialsException() {
+        LoginUserDTO loginUserDTO = UserFactory.createValidLoginUserDTO();
 
         doThrow(new BadCredentialsException("Authentication failed"))
                 .when(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
@@ -115,6 +126,19 @@ public class UserServiceTest {
                 .isInstanceOf(BadCredentialsException.class)
                 .hasMessage("Invalid email or password.");
     }
+
+    @Test
+    public void UserService_UnexpectedRuntimeException_ThrowBadCredentialsException() {
+        LoginUserDTO loginUserDTO = UserFactory.createValidLoginUserDTO();
+
+        doThrow(new RuntimeException("Something else failed"))
+                .when(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+
+        Assertions.assertThatThrownBy(() -> userService.authenticate(loginUserDTO))
+                .isInstanceOf(AccessDeniedException.class)
+                .hasMessage("Authentication failed. Please try again later.");
+    }
+
 
     @Test
     public void UserService_GetUserById_ReturnsUser() {
