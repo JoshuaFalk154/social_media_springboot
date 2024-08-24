@@ -6,10 +6,11 @@ import com.social_media_springboot.social_media_springboot.entities.User;
 import com.social_media_springboot.social_media_springboot.exceptions.ResourceNotFoundException;
 import com.social_media_springboot.social_media_springboot.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.security.access.AccessDeniedException;
+
 
 @Service
 @RequiredArgsConstructor
@@ -32,15 +33,25 @@ public class UserService {
     }
 
     public User authenticate(LoginUserDTO loginUserDto) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginUserDto.getEmail(),
-                        loginUserDto.getPassword()
-                )
-        );
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginUserDto.getEmail(),
+                            loginUserDto.getPassword()
+                    )
+            );
+        } catch (DisabledException e) {
+            throw new AccessDeniedException("User account is disabled.");
+        } catch (LockedException e) {
+            throw new AccessDeniedException("User account is locked.");
+        } catch (BadCredentialsException e) {
+            throw new BadCredentialsException("Invalid email or password.");
+        } catch (RuntimeException e) {
+            throw new AccessDeniedException("Authentication failed. Please try again later.");
+        }
 
         return userRepository.findByEmail(loginUserDto.getEmail())
-                .orElseThrow();
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
     }
 
     public User getUserById(Long id) {

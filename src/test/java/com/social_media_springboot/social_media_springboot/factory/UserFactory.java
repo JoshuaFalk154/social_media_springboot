@@ -9,6 +9,7 @@ public class UserFactory {
         return createValidUser("validUser" + userCounter++, "valid" + userCounter + "@gmail.com", "password" + userCounter);
     }
 
+
     public static User createValidUser(String username, String email, String password) {
         return createUser(username, email, password);
     }
@@ -20,4 +21,16 @@ public class UserFactory {
                 .password(password)
                 .build();
     }
+
+    public static User createValidUserWithId(Long id) {
+        return createValidUserWithId(id, "validUser" + id, "valid" + id + "@gmail.com", "password" + id);
+    }
+
+
+    public static User createValidUserWithId(Long id, String username, String email, String password) {
+        User user = createUser(username, email, password);
+        user.setId(id);
+        return user;
+    }
+
 }

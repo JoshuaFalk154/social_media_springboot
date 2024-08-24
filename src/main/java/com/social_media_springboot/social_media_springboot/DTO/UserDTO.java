@@ -13,8 +13,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-
-
 public class UserDTO {
     @NotNull(message = "Email cant be empty")
     @Email
