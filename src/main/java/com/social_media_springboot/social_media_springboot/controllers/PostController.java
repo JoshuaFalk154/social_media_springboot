@@ -1,7 +1,12 @@
 package com.social_media_springboot.social_media_springboot.controllers;
 
-import com.social_media_springboot.social_media_springboot.DTO.*;
+import com.social_media_springboot.social_media_springboot.DTO.CreatePostDTO;
+import com.social_media_springboot.social_media_springboot.DTO.CreatePostResponseDTO;
+import com.social_media_springboot.social_media_springboot.DTO.RequestPostDTO;
+import com.social_media_springboot.social_media_springboot.DTO.UpdatePostDTO;
+import com.social_media_springboot.social_media_springboot.entities.Post;
 import com.social_media_springboot.social_media_springboot.entities.User;
+import com.social_media_springboot.social_media_springboot.mapper.PostMapper;
 import com.social_media_springboot.social_media_springboot.services.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,12 +24,13 @@ import java.util.Optional;
 public class PostController {
 
     private final PostService postService;
+    private final PostMapper postMapper;
 
     @PostMapping("/posts")
-    public ResponseEntity<CreatePostResponseDTO> createPost(@Valid  @RequestBody CreatePostDTO createPostDTO, @AuthenticationPrincipal User currentUser) {
-        CreatePostResponseDTO postResponseDTO = postService.createPost(createPostDTO, currentUser);
+    public ResponseEntity<CreatePostResponseDTO> createPost(@Valid @RequestBody CreatePostDTO createPostDTO, @AuthenticationPrincipal User currentUser) {
+        Post post = postService.createPost(createPostDTO, currentUser);
 
-        return ResponseEntity.ok(postResponseDTO);
+        return ResponseEntity.ok(postMapper.postToCreatePostResponseDTO(post));
     }
 
     @GetMapping("/posts")
@@ -33,7 +39,11 @@ public class PostController {
             @RequestParam("title") Optional<String> title,
             @AuthenticationPrincipal User currentUser
     ) {
-        List<RequestPostDTO> result = postService.queryPosts(postId, title, currentUser);
+        //List<RequestPostDTO> result = postService.queryPosts(postId, title, currentUser);
+        List<RequestPostDTO> result = postService.queryPosts(postId, title, currentUser).stream()
+                .map(postMapper::postToRequestPostDTO)
+                .toList();
+
 
         return ResponseEntity.ok(result);
     }
@@ -44,13 +54,13 @@ public class PostController {
             @AuthenticationPrincipal User currentUser
 
     ) {
-        RequestPostDTO postDTO = postService.getPostById(currentUser, id);
+        RequestPostDTO postDTO = postMapper.postToRequestPostDTO(postService.getPostById(currentUser, id));
         return ResponseEntity.ok(postDTO);
     }
 
     @PutMapping("/posts/{id}")
     public ResponseEntity<RequestPostDTO> updatePost(@PathVariable Long id, @AuthenticationPrincipal User currentUser, @Valid @RequestBody UpdatePostDTO post) {
-        RequestPostDTO postDTO = postService.updatePostById(currentUser, id, post);
+        RequestPostDTO postDTO = postMapper.postToRequestPostDTO(postService.updatePostById(currentUser, id, post));
 
         return ResponseEntity.ok(postDTO);
     }

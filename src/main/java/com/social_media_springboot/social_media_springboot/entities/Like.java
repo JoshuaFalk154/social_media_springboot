@@ -1,21 +1,15 @@
 package com.social_media_springboot.social_media_springboot.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import java.util.Date;
-import java.util.Objects;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "likes")
@@ -25,42 +19,42 @@ import org.hibernate.annotations.UpdateTimestamp;
 @AllArgsConstructor
 public class Like {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-  @ManyToOne
-  @JoinColumn(name = "user_id")
-  private User user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-  @ManyToOne
-  @JoinColumn(name = "post_id")
-  private Post post;
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private Post post;
 
-  @CreationTimestamp
-  @Column(updatable = false, name = "created_at")
-  private Date createdAt;
+    @CreationTimestamp
+    @Column(updatable = false, name = "created_at")
+    private Date createdAt;
 
 
-  @UpdateTimestamp
-  @Column(name = "updated_at")
-  private Date updatedAt;
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private Date updatedAt;
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Like like = (Like) o;
+        return Objects.equals(id, like.id);
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Like like = (Like) o;
-    return Objects.equals(id, like.id);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(id);
-  }
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
 }
