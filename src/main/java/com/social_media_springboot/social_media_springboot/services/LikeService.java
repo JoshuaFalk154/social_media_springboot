@@ -19,15 +19,9 @@ public class LikeService {
     private final UserMapper userMapper;
 
 
-    public void validateUserNotAlreadyLikedPost(Like like) {
-        if (likeRepository.findByUserAndPost(like.getUser(), like.getPost()).isPresent()) {
-            throw new IllegalStateException("You already liked post");
-        }
-    }
-
-    public boolean userLikedPost(Like like) {
-        return likeRepository.findByUserAndPost(like.getUser(), like.getPost()).isPresent();
-    }
+//    public boolean userLikedPost(Like like) {
+//        return likeRepository.findByUserAndPost(like.getUser(), like.getPost()).isPresent();
+//    }
 
     public void addLike(Like like) {
         likeRepository.save(like);
