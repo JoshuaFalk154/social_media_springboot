@@ -1,15 +1,15 @@
 package com.social_media_springboot.social_media_springboot.services;
 
-import com.social_media_springboot.social_media_springboot.DTO.LoginUserDTO;
-import com.social_media_springboot.social_media_springboot.DTO.RegisterUserDTO;
+import com.social_media_springboot.social_media_springboot.DTO.UserCreateDTO;
+import com.social_media_springboot.social_media_springboot.DTO.UserLoginDTO;
 import com.social_media_springboot.social_media_springboot.entities.User;
 import com.social_media_springboot.social_media_springboot.exceptions.ResourceNotFoundException;
 import com.social_media_springboot.social_media_springboot.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.security.access.AccessDeniedException;
 
 
 @Service
@@ -21,23 +21,23 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
 
 
-    public User signup(RegisterUserDTO registerUserDTO) {
+    public User signup(UserCreateDTO userCreateDTO) {
         User user = User.builder()
-                .username(registerUserDTO.getUsername())
-                .email(registerUserDTO.getEmail())
-                .password(passwordEncoder.encode(registerUserDTO.getPassword()))
+                .username(userCreateDTO.getUsername())
+                .email(userCreateDTO.getEmail())
+                .password(passwordEncoder.encode(userCreateDTO.getPassword()))
                 .build();
 
 
         return userRepository.save(user);
     }
 
-    public User authenticate(LoginUserDTO loginUserDto) {
+    public User authenticate(UserLoginDTO userLoginDto) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            loginUserDto.getEmail(),
-                            loginUserDto.getPassword()
+                            userLoginDto.getEmail(),
+                            userLoginDto.getPassword()
                     )
             );
         } catch (DisabledException e) {
@@ -50,7 +50,7 @@ public class UserService {
             throw new AccessDeniedException("Authentication failed. Please try again later.");
         }
 
-        return userRepository.findByEmail(loginUserDto.getEmail())
+        return userRepository.findByEmail(userLoginDto.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
     }
 

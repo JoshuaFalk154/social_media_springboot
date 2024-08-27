@@ -1,6 +1,6 @@
 package com.social_media_springboot.social_media_springboot.factory;
 
-import com.social_media_springboot.social_media_springboot.DTO.CreatePostDTO;
+import com.social_media_springboot.social_media_springboot.DTO.PostCreateDTO;
 import com.social_media_springboot.social_media_springboot.entities.Like;
 import com.social_media_springboot.social_media_springboot.entities.Post;
 import com.social_media_springboot.social_media_springboot.entities.User;
@@ -39,12 +39,12 @@ public class PostFactory {
                 .build();
     }
 
-    public static CreatePostDTO createValidCreatePostDTO() {
+    public static PostCreateDTO createValidCreatePostDTO() {
         return createCreatePostDTO("content", "title", true);
     }
 
-    public static CreatePostDTO createCreatePostDTO(String content, String title, boolean isPublic) {
-        return CreatePostDTO.builder()
+    public static PostCreateDTO createCreatePostDTO(String content, String title, boolean isPublic) {
+        return PostCreateDTO.builder()
                 .title(title)
                 .content(content)
                 .isPublic(isPublic)

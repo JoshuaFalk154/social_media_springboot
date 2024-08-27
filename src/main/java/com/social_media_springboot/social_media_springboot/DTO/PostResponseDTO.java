@@ -1,7 +1,5 @@
 package com.social_media_springboot.social_media_springboot.DTO;
 
-import com.social_media_springboot.social_media_springboot.entities.Like;
-import com.social_media_springboot.social_media_springboot.entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,11 +14,12 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestPostDTO extends PostDTO{
+public class PostResponseDTO extends PostDTO {
     private Long id;
     private boolean isPublic;
-    private UserDTO owner;
-    private List<RequestLikeDTO> likes;
+    //private UserDTO owner;
+    private UserNestedDTO owner;
+    private List<LikeResponseDTO> likes;
     private Date createdAt;
     private Date updatedAt;
 }

@@ -1,8 +1,8 @@
 package com.social_media_springboot.social_media_springboot.services;
 
-import com.social_media_springboot.social_media_springboot.DTO.CreatePostDTO;
 import com.social_media_springboot.social_media_springboot.DTO.LikeDTO;
-import com.social_media_springboot.social_media_springboot.DTO.UpdatePostDTO;
+import com.social_media_springboot.social_media_springboot.DTO.PostCreateDTO;
+import com.social_media_springboot.social_media_springboot.DTO.PostUpdateDTO;
 import com.social_media_springboot.social_media_springboot.entities.Like;
 import com.social_media_springboot.social_media_springboot.entities.Post;
 import com.social_media_springboot.social_media_springboot.entities.User;
@@ -48,17 +48,17 @@ public class PostServiceTest {
 
     @Test
     public void createPost_ValidInput_ReturnsCreatedPost() {
-        CreatePostDTO createPostDTO = PostFactory.createValidCreatePostDTO();
+        PostCreateDTO postCreateDTO = PostFactory.createValidCreatePostDTO();
         User user = UserFactory.createValidUser();
         Post expectedPost = Post.builder()
-                .title(createPostDTO.getTitle())
-                .content(createPostDTO.getContent())
-                .isPublic(createPostDTO.isPublic())
+                .title(postCreateDTO.getTitle())
+                .content(postCreateDTO.getContent())
+                .isPublic(postCreateDTO.isPublic())
                 .owner(user)
                 .build();
         when(postRepository.save(any(Post.class))).thenReturn(expectedPost);
 
-        Post createdPost = postService.createPost(createPostDTO, user);
+        Post createdPost = postService.createPost(postCreateDTO, user);
 
         Assertions.assertThat(createdPost).isNotNull();
         Assertions.assertThat(expectedPost.getTitle()).isEqualTo(createdPost.getTitle());
@@ -178,7 +178,7 @@ public class PostServiceTest {
     public void updatePostById_ValidUpdate_ReturnUpdatedPost() {
         User user = UserFactory.createValidUserWithId(1L);
         Post post = PostFactory.createPost(1L, user, null);
-        UpdatePostDTO updatePostDTO = UpdatePostDTO.builder()
+        PostUpdateDTO postUpdateDTO = PostUpdateDTO.builder()
                 .title("updated title")
                 .content("updated content")
                 .isPublic(true).build();
@@ -189,7 +189,7 @@ public class PostServiceTest {
         doReturn(post).when(postService2).validatePostExistenceAndOwnership(user, 1L);
         when(postRepository.save(post)).thenReturn(post);
 
-        Post actualPost = postService2.updatePostById(user, 1L, updatePostDTO);
+        Post actualPost = postService2.updatePostById(user, 1L, postUpdateDTO);
 
         Assertions.assertThat(actualPost.getTitle()).isEqualTo("updated title");
         Assertions.assertThat(actualPost.getContent()).isEqualTo("updated content");
@@ -199,14 +199,14 @@ public class PostServiceTest {
     @Test
     public void updatePostById_PostNotFound_updatePostById_PostNotFound_ThrowsResourceNotFoundException() {
         User user = UserFactory.createValidUserWithId(1L);
-        UpdatePostDTO updatePostDTO = UpdatePostDTO.builder().build();
+        PostUpdateDTO postUpdateDTO = PostUpdateDTO.builder().build();
 
         PostService postService1 = Mockito.spy(postService);
 
         doThrow(new ResourceNotFoundException("Post not found with id: " + 1L))
                 .when(postService1).validatePostExistenceAndOwnership(user, 1L);
 
-        Assertions.assertThatThrownBy(() -> postService1.updatePostById(user, 1L, updatePostDTO))
+        Assertions.assertThatThrownBy(() -> postService1.updatePostById(user, 1L, postUpdateDTO))
                 .isInstanceOf(ResourceNotFoundException.class);
     }
 
@@ -214,14 +214,14 @@ public class PostServiceTest {
     public void updatePostById_UserNotOwner_ThrowsAccessDeniedException() {
         User user = UserFactory.createValidUserWithId(1L);
         Long postId = 1L;
-        UpdatePostDTO updatePostDTO = UpdatePostDTO.builder().build();
+        PostUpdateDTO postUpdateDTO = PostUpdateDTO.builder().build();
 
         PostService postService1 = Mockito.spy(postService);
 
         doThrow(new AccessDeniedException("User is not the owner of the post"))
                 .when(postService1).validatePostExistenceAndOwnership(user, postId);
 
-        Assertions.assertThatThrownBy(() -> postService1.updatePostById(user, postId, updatePostDTO))
+        Assertions.assertThatThrownBy(() -> postService1.updatePostById(user, postId, postUpdateDTO))
                 .isInstanceOf(AccessDeniedException.class)
                 .hasMessage("User is not the owner of the post");
     }

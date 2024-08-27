@@ -12,7 +12,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class LoginUserDTO extends UserDTO {
+public class UserNestedDTO extends UserDTO {
     @NotNull
-    private String password;
+    private Long Id;
 }

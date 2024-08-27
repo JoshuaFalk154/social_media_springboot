@@ -12,7 +12,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class PostBasicDTO extends PostDTO {
+public class UserLoginDTO extends UserDTO {
     @NotNull
-    private Long Id;
+    private String password;
 }

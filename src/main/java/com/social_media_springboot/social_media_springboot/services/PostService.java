@@ -1,8 +1,8 @@
 package com.social_media_springboot.social_media_springboot.services;
 
-import com.social_media_springboot.social_media_springboot.DTO.CreatePostDTO;
 import com.social_media_springboot.social_media_springboot.DTO.LikeDTO;
-import com.social_media_springboot.social_media_springboot.DTO.UpdatePostDTO;
+import com.social_media_springboot.social_media_springboot.DTO.PostCreateDTO;
+import com.social_media_springboot.social_media_springboot.DTO.PostUpdateDTO;
 import com.social_media_springboot.social_media_springboot.entities.Like;
 import com.social_media_springboot.social_media_springboot.entities.Post;
 import com.social_media_springboot.social_media_springboot.entities.User;
@@ -30,11 +30,11 @@ public class PostService {
     private final LikeService likeService;
 
 
-    public Post createPost(CreatePostDTO createPostDTO, User currentUser) {
+    public Post createPost(PostCreateDTO postCreateDTO, User currentUser) {
         Post createPost = Post.builder()
-                .title(createPostDTO.getTitle())
-                .content(createPostDTO.getContent())
-                .isPublic(createPostDTO.isPublic())
+                .title(postCreateDTO.getTitle())
+                .content(postCreateDTO.getContent())
+                .isPublic(postCreateDTO.isPublic())
                 .owner(currentUser)
                 .build();
 
@@ -59,7 +59,7 @@ public class PostService {
         return post != null && user.equals(post.getOwner());
     }
 
-    public Post updatePostById(User currentUser, Long id, UpdatePostDTO postDTO) {
+    public Post updatePostById(User currentUser, Long id, PostUpdateDTO postDTO) {
         Post post = validatePostExistenceAndOwnership(currentUser, id);
 
         post.setTitle(postDTO.getTitle());

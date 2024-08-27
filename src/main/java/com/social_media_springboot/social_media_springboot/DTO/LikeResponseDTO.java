@@ -7,7 +7,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-public class RequestLikeDTO  {
-    private UserBasicDTO user;
-    private PostBasicDTO post;
+public class LikeResponseDTO {
+    private UserNestedDTO user;
+    private PostNestedDTO post;
 }
