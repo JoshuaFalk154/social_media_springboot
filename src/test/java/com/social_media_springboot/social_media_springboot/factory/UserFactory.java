@@ -19,7 +19,7 @@ public class UserFactory {
     }
 
     public static User createUser(String username, String email, String password) {
-        return User.builder().username(username).email(email).password(password).build();
+        return User.builder().nickname(username).email(email).password(password).build();
     }
 
     public static User createValidUserWithId(Long id) {

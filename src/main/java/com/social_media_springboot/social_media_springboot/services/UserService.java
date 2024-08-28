@@ -23,7 +23,7 @@ public class UserService {
 
     public User signup(UserCreateDTO userCreateDTO) {
         User user = User.builder()
-                .username(userCreateDTO.getUsername())
+                .nickname(userCreateDTO.getUsername())
                 .email(userCreateDTO.getEmail())
                 .password(passwordEncoder.encode(userCreateDTO.getPassword()))
                 .build();

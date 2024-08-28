@@ -47,7 +47,7 @@ public class UserServiceTest {
 
         User expectedUser =
                 User.builder()
-                        .username(userCreateDTO.getUsername())
+                        .nickname(userCreateDTO.getUsername())
                         .email(userCreateDTO.getEmail())
                         .password("encodedPassword")
                         .build();
@@ -58,7 +58,7 @@ public class UserServiceTest {
         User createdUser = userService.signup(userCreateDTO);
 
         Assertions.assertThat(createdUser).isNotNull();
-        Assertions.assertThat(createdUser.getUsername()).isEqualTo(expectedUser.getUsername());
+        Assertions.assertThat(createdUser.getNickname()).isEqualTo(expectedUser.getNickname());
         Assertions.assertThat(createdUser.getEmail()).isEqualTo(expectedUser.getEmail());
         Assertions.assertThat(createdUser.getPassword()).isEqualTo(expectedUser.getPassword());
     }
@@ -141,7 +141,7 @@ public class UserServiceTest {
 
         Assertions.assertThat(user).isNotNull();
         Assertions.assertThat(user.getEmail()).isEqualTo(excpectedUser.getEmail());
-        Assertions.assertThat(user.getUsername()).isEqualTo(excpectedUser.getUsername());
+        Assertions.assertThat(user.getNickname()).isEqualTo(excpectedUser.getNickname());
     }
 
     @Test
