@@ -22,4 +22,6 @@ public class PostResponseDTO extends PostDTO {
     private List<LikeResponseDTO> likes;
     private Date createdAt;
     private Date updatedAt;
+
+
 }
