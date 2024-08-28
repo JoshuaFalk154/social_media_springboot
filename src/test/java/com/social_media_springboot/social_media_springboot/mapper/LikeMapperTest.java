@@ -18,8 +18,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.eq;
 
 @ExtendWith(MockitoExtension.class)
 public class LikeMapperTest {

@@ -17,9 +17,8 @@ import java.util.List;
 public class PostResponseDTO extends PostDTO {
     private Long id;
     private boolean isPublic;
-    //private UserDTO owner;
     private UserNestedDTO owner;
-    private List<LikeResponseDTO> likes;
+    private List<LikeNestedDTO> likes;
     private Date createdAt;
     private Date updatedAt;
 

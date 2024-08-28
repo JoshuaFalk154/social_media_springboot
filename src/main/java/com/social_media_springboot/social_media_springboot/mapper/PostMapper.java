@@ -38,7 +38,7 @@ public class PostMapper {
                 .content(post.getContent())
                 .isPublic(post.isPublic())
                 .owner(userMapper.userToNestedUserDTO(post.getOwner()))
-                .likes(post.getLikes().stream().map(likeMapper::likeToRequestLikeDTO).toList())
+                .likes(post.getLikes().stream().map(likeMapper::likeToLikeNestedDTO).toList())
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())
                 .build();
