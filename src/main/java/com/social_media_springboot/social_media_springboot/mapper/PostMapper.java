@@ -4,17 +4,23 @@ import com.social_media_springboot.social_media_springboot.DTO.PostCreatedRespon
 import com.social_media_springboot.social_media_springboot.DTO.PostNestedDTO;
 import com.social_media_springboot.social_media_springboot.DTO.PostResponseDTO;
 import com.social_media_springboot.social_media_springboot.entities.Post;
-import com.social_media_springboot.social_media_springboot.services.LikeService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class PostMapper {
 
-    private final LikeService likeService;
+
     private final LikeMapper likeMapper;
     private final UserMapper userMapper;
+
+    @Autowired
+    public PostMapper(@Lazy LikeMapper likeMapper, UserMapper userMapper) {
+        this.likeMapper = likeMapper;
+        this.userMapper = userMapper;
+    }
+
 
     public PostCreatedResponseDTO postToCreatePostResponseDTO(Post post) {
         return PostCreatedResponseDTO.builder()
@@ -34,6 +40,7 @@ public class PostMapper {
                 //.owner(userToUserDTO(post.getOwner()))
                 .owner(userMapper.userToNestedUserDTO(post.getOwner()))
                 //.likes(post.getLikes().stream().map(like -> likeMapper.likeToRequestLikeDTO(like.getUser(), postToPostNestedDTO(like.getPost()))).toList())
+                .likes(post.getLikes().stream().map(likeMapper::likeToRequestLikeDTO).toList())
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())
                 .build();

@@ -8,19 +8,10 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class UserMapper {
-//    public UserNestedDTO userToNestedUserDTO(User user) {
-//        return UserNestedDTO.builder()
-//                .email(user.getEmail())
-//                .Id(user.getId())
-//                .build();
-//    }
-
     public UserNestedDTO userToNestedUserDTO(User user) {
         return UserNestedDTO.builder()
                 .email(user.getEmail())
                 .Id(user.getId())
                 .build();
     }
-
-
 }

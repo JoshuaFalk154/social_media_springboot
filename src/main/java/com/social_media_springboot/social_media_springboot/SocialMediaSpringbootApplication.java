@@ -5,9 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class SocialMediaSpringbootApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(SocialMediaSpringbootApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(SocialMediaSpringbootApplication.class, args);
+    }
 }

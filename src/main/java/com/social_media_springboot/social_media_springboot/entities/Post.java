@@ -1,7 +1,6 @@
 package com.social_media_springboot.social_media_springboot.entities;
 
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -12,7 +11,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name="posts")
+@Table(name = "posts")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -38,8 +37,8 @@ public class Post {
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
-    //@OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    //@OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
     private List<Like> likes = new ArrayList<>();
 
     @CreationTimestamp
