@@ -39,11 +39,9 @@ public class PostController {
             @RequestParam("title") Optional<String> title,
             @AuthenticationPrincipal User currentUser
     ) {
-        //List<RequestPostDTO> result = postService.queryPosts(postId, title, currentUser);
         List<PostResponseDTO> result = postService.queryPosts(postId, title, currentUser).stream()
                 .map(postMapper::postToRequestPostDTO)
                 .toList();
-
 
         return ResponseEntity.ok(result);
     }
@@ -72,18 +70,5 @@ public class PostController {
         return ResponseEntity.ok("Post with id " + id + " successfully deleted");
     }
 
-//    @PostMapping("/likes")
-//    public ResponseEntity<String> likePost(
-//            @RequestBody LikeDTO likeDTO,
-//            @AuthenticationPrincipal User currentUser
-//    ) {
-//        postService.toggleLikePost(likeDTO, currentUser);
-//
-//        if (postService.isPostLikedByUser(likeDTO.getPostId(), currentUser)) {
-//            return ResponseEntity.ok("You liked Post with id " + likeDTO.getPostId());
-//        } else {
-//            return ResponseEntity.ok("You unliked Post with id " + likeDTO.getPostId());
-//        }
-//    }
 
 }

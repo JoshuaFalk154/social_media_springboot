@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 public class LikeMapper {
 
     private final UserMapper userMapper;
+    private final PostMapper postMapper;
 
     public LikeResponseDTO likeToRequestLikeDTO(User user, PostNestedDTO postNestedDTO) {
         return LikeResponseDTO.builder()
@@ -18,4 +19,13 @@ public class LikeMapper {
                 .post(postNestedDTO)
                 .build();
     }
+
+//    public LikeResponseDTO likeToRequestLikeDTO(Like like) {
+//        return LikeResponseDTO.builder()
+//                .user(userMapper.userToNestedUserDTO(like.getUser()))
+//                .post(postMapper.postToPostNestedDTO(like.getPost()))
+//                .build();
+//    }
+
+
 }

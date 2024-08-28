@@ -33,19 +33,14 @@ public class PostMapper {
                 .isPublic(post.isPublic())
                 //.owner(userToUserDTO(post.getOwner()))
                 .owner(userMapper.userToNestedUserDTO(post.getOwner()))
-                .likes(post.getLikes().stream().map(like -> likeMapper.likeToRequestLikeDTO(like.getUser(), postToPostBasicDTO(like.getPost()))).toList())
+                //.likes(post.getLikes().stream().map(like -> likeMapper.likeToRequestLikeDTO(like.getUser(), postToPostNestedDTO(like.getPost()))).toList())
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())
                 .build();
     }
 
-//    public UserDTO userToUserDTO(User user) {
-//        return UserDTO.builder()
-//                .email(user.getEmail())
-//                .build();
-//    }
 
-    public PostNestedDTO postToPostBasicDTO(Post post) {
+    public PostNestedDTO postToPostNestedDTO(Post post) {
         return PostNestedDTO.builder()
                 .title(post.getTitle())
                 .content(post.getContent())
