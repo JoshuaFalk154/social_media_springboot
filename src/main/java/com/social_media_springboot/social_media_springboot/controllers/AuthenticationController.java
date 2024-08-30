@@ -27,6 +27,8 @@ public class AuthenticationController {
 
     @PostMapping("/signup")
     public ResponseEntity<UserResponseDTO> register(@Valid @RequestBody UserCreateDTO userCreateDTO) {
+        userService.validateUserNotAlreadyExists(userCreateDTO);
+        
         User registeredUser = userService.signup(userCreateDTO);
 
         return ResponseEntity.ok(userMapper.userToUserResponseDTO(registeredUser));

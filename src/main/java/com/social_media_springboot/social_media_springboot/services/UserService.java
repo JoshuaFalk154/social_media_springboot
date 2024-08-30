@@ -59,5 +59,13 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + "not found"));
     }
 
+    // TODO test
+    public void validateUserNotAlreadyExists(UserCreateDTO userCreate) {
+        userRepository.findByEmailOrNickname(userCreate.getEmail(), userCreate.getUsername())
+                .ifPresent(user -> {
+                    throw new IllegalStateException("User already exists");
+                });
+    }
+
 
 }

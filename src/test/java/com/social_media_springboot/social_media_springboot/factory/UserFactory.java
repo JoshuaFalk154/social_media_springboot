@@ -41,4 +41,5 @@ public class UserFactory {
     public static UserLoginDTO createValidLoginUserDTO(String email, String password) {
         return UserLoginDTO.builder().email(email).password(password).build();
     }
+
 }
