@@ -14,7 +14,7 @@ public class LikeMapper {
     private final PostMapper postMapper;
 
     @Autowired
-    public LikeMapper(UserMapper userMapper, @Lazy PostMapper postMapper) {
+    public LikeMapper(@Lazy UserMapper userMapper, @Lazy PostMapper postMapper) {
         this.userMapper = userMapper;
         this.postMapper = postMapper;
     }

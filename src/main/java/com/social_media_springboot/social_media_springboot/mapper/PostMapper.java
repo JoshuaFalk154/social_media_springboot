@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.Optional;
+
 @Service
 public class PostMapper {
 
@@ -16,7 +19,7 @@ public class PostMapper {
     private final UserMapper userMapper;
 
     @Autowired
-    public PostMapper(@Lazy LikeMapper likeMapper, UserMapper userMapper) {
+    public PostMapper(@Lazy LikeMapper likeMapper, @Lazy UserMapper userMapper) {
         this.likeMapper = likeMapper;
         this.userMapper = userMapper;
     }
@@ -38,7 +41,10 @@ public class PostMapper {
                 .content(post.getContent())
                 .isPublic(post.isPublic())
                 .owner(userMapper.userToNestedUserDTO(post.getOwner()))
-                .likes(post.getLikes().stream().map(likeMapper::likeToLikeNestedDTO).toList())
+                .likes(Optional.ofNullable(post.getLikes())
+                        .orElse(Collections.emptyList())
+                        .stream().map(likeMapper::likeToLikeNestedDTO).toList()
+                )
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())
                 .build();

@@ -3,7 +3,9 @@ package com.social_media_springboot.social_media_springboot.controllers;
 import com.social_media_springboot.social_media_springboot.DTO.LoginResponse;
 import com.social_media_springboot.social_media_springboot.DTO.UserCreateDTO;
 import com.social_media_springboot.social_media_springboot.DTO.UserLoginDTO;
+import com.social_media_springboot.social_media_springboot.DTO.UserResponseDTO;
 import com.social_media_springboot.social_media_springboot.entities.User;
+import com.social_media_springboot.social_media_springboot.mapper.UserMapper;
 import com.social_media_springboot.social_media_springboot.services.JwtService;
 import com.social_media_springboot.social_media_springboot.services.UserService;
 import jakarta.validation.Valid;
@@ -21,12 +23,13 @@ public class AuthenticationController {
 
     private final UserService userService;
     private final JwtService jwtService;
+    private final UserMapper userMapper;
 
     @PostMapping("/signup")
-    public ResponseEntity<User> register(@Valid @RequestBody UserCreateDTO userCreateDTO) {
+    public ResponseEntity<UserResponseDTO> register(@Valid @RequestBody UserCreateDTO userCreateDTO) {
         User registeredUser = userService.signup(userCreateDTO);
 
-        return ResponseEntity.ok(registeredUser);
+        return ResponseEntity.ok(userMapper.userToUserResponseDTO(registeredUser));
     }
 
     @PostMapping("/login")
