@@ -21,6 +21,4 @@ public class PostResponseDTO extends PostDTO {
     private List<LikeNestedDTO> likes;
     private Date createdAt;
     private Date updatedAt;
-
-
 }
