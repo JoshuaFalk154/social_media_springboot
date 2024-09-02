@@ -10,19 +10,30 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Testcontainers
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
 public class PostControllerTestIT {
+
+    @Container
+    @ServiceConnection
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres");
 
 
     private final MockMvc mockMvc;
@@ -40,14 +51,7 @@ public class PostControllerTestIT {
     public void setup() throws Exception {
         user = TestUtil.createAndSaveValidUser(DEFAULT_PASSWORD);
         token = TestUtil.obtainJwtToken(user, mockMvc);
-        //TestUtil.setToken(token);
     }
-
-
-//    private MockHttpServletRequestBuilder authorizedRequest() {
-//        return MockMvcRequestBuilders.get("/api/posts")
-//                .header("Authorization", "Bearer " + token);
-//    }
 
 
     @Test
