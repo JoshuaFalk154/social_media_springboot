@@ -1,7 +1,6 @@
 package com.social_media_springboot.social_media_springboot.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.JsonPath;
 import com.social_media_springboot.social_media_springboot.DTO.PostCreateDTO;
 import com.social_media_springboot.social_media_springboot.DTO.PostUpdateDTO;
 import com.social_media_springboot.social_media_springboot.TestUtil;
@@ -13,10 +12,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -41,47 +38,11 @@ public class PostControllerTestIT {
     }
 
 
-    private String obtainJwtToken(User user, String password) throws Exception {
-        String userLoginJson = TestUtil.createUserLoginJson(user.getEmail(), password);
-
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(userLoginJson))
-                .andReturn();
-        String response = result.getResponse().getContentAsString();
-        return JsonPath.read(response, "$.token");
-    }
-
-    private String obtainJwtToken(User user) throws Exception {
-        return obtainJwtToken(user, DEFAULT_PASSWORD);
-    }
-
     @BeforeEach
     public void setup() throws Exception {
         user = TestUtil.createAndSaveValidUser(DEFAULT_PASSWORD);
-        token = obtainJwtToken(user);
-    }
-
-    private MockHttpServletRequestBuilder authorizedRequest(String method, String url, String data) {
-        MockHttpServletRequestBuilder requestBuilder = switch (method) {
-            case "GET" -> MockMvcRequestBuilders.get(url);
-            case "POST" -> MockMvcRequestBuilders.post(url);
-            case "PUT" -> MockMvcRequestBuilders.put(url);
-            case "DELETE" -> MockMvcRequestBuilders.delete(url);
-            default -> throw new IllegalArgumentException("Unsupported HTTP method: " + method);
-        };
-
-        requestBuilder.header("Authorization", "Bearer " + token);
-
-        if (data != null) {
-            requestBuilder.contentType(MediaType.APPLICATION_JSON)
-                    .content(data);
-        }
-        return requestBuilder;
-    }
-
-    private MockHttpServletRequestBuilder authorizedRequest(String method, String url) {
-        return authorizedRequest(method, url, null);
+        token = TestUtil.obtainJwtToken(user, mockMvc);
+        TestUtil.setToken(token);
     }
 
 
@@ -103,7 +64,7 @@ public class PostControllerTestIT {
                 .build();
         String data = new ObjectMapper().writeValueAsString(postCreateDTO);
 
-        mockMvc.perform(authorizedRequest("POST", "/api/posts", data))
+        mockMvc.perform(TestUtil.authorizedRequest("POST", "/api/posts", data))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.createdAt").exists())
@@ -119,7 +80,7 @@ public class PostControllerTestIT {
         Post post4 = TestUtil.createAndSaveValidPost(user);
 
         mockMvc.perform(
-                        authorizedRequest("GET", "/api/posts", null)
+                        TestUtil.authorizedRequest("GET", "/api/posts", null)
                                 .param("post_id", String.valueOf(post2.getId())
                                 )
                 )
@@ -135,7 +96,7 @@ public class PostControllerTestIT {
         Post post3 = TestUtil.createAndSaveValidPost(user);
         Post post4 = TestUtil.createAndSaveValidPostWithTitle(user, title);
 
-        mockMvc.perform(authorizedRequest("GET", "/api/posts")
+        mockMvc.perform(TestUtil.authorizedRequest("GET", "/api/posts")
                         .param("title", title)
                 )
                 .andExpect(jsonPath("$[0].id").value(post1.getId()))
@@ -150,7 +111,7 @@ public class PostControllerTestIT {
         Post post2 = TestUtil.createAndSaveValidPost(user);
         Post post3 = TestUtil.createAndSaveValidPost(user);
 
-        mockMvc.perform(authorizedRequest("GET", "/api/posts")
+        mockMvc.perform(TestUtil.authorizedRequest("GET", "/api/posts")
                         .param("title", title)
                         .param("post_id", String.valueOf(post1.getId()))
                 )
@@ -165,7 +126,7 @@ public class PostControllerTestIT {
         Post post2 = TestUtil.createAndSaveValidPost(user);
         Post post3 = TestUtil.createAndSaveValidPost(user);
 
-        mockMvc.perform(authorizedRequest("GET", "/api/posts")
+        mockMvc.perform(TestUtil.authorizedRequest("GET", "/api/posts")
                         .param("title", queryTitle)
                         .param("post_id", String.valueOf(post1.getId()))
                 )
@@ -179,7 +140,7 @@ public class PostControllerTestIT {
         Post post2 = TestUtil.createAndSaveValidPost(user);
         Post post3 = TestUtil.createAndSaveValidPost(user);
 
-        mockMvc.perform(authorizedRequest("GET", "/api/posts")
+        mockMvc.perform(TestUtil.authorizedRequest("GET", "/api/posts")
                         .param("title", queryTitle)
                         .param("post_id", String.valueOf(post1.getId() + 1))
                 )
@@ -192,7 +153,7 @@ public class PostControllerTestIT {
         String queryTitle = "test";
         Post post1 = TestUtil.createAndSaveValidPostWithTitle(postOwner, queryTitle);
 
-        mockMvc.perform(authorizedRequest("GET", "/api/posts")
+        mockMvc.perform(TestUtil.authorizedRequest("GET", "/api/posts")
                         .param("title", queryTitle)
                 )
                 .andExpect(jsonPath("$.length()").value(0));
@@ -204,7 +165,7 @@ public class PostControllerTestIT {
         Post post1 = TestUtil.createAndSaveValidPost(user);
         Post post2 = TestUtil.createAndSaveValidPost(user);
 
-        mockMvc.perform(authorizedRequest("GET", "/api/posts/" + post1.getId())
+        mockMvc.perform(TestUtil.authorizedRequest("GET", "/api/posts/" + post1.getId())
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(post1.getId()))
@@ -216,7 +177,7 @@ public class PostControllerTestIT {
         Post post1 = TestUtil.createAndSaveValidPost(user);
         Post post2 = TestUtil.createAndSaveValidPost(user);
 
-        mockMvc.perform(authorizedRequest("GET", "/api/posts/" + 0)
+        mockMvc.perform(TestUtil.authorizedRequest("GET", "/api/posts/" + 0)
                 )
                 .andExpect(status().isNotFound());
     }
@@ -226,9 +187,8 @@ public class PostControllerTestIT {
         User postOwner = TestUtil.createAndSaveValidUser(DEFAULT_PASSWORD);
         Post post1 = TestUtil.createAndSaveValidPost(postOwner);
         Post post2 = TestUtil.createAndSaveValidPost(postOwner);
-        String token = obtainJwtToken(user, DEFAULT_PASSWORD);
 
-        mockMvc.perform(authorizedRequest("GET", "/api/posts/" + post1.getId())
+        mockMvc.perform(TestUtil.authorizedRequest("GET", "/api/posts/" + post1.getId())
                 )
                 .andExpect(status().isForbidden());
     }
@@ -239,7 +199,7 @@ public class PostControllerTestIT {
         PostUpdateDTO postUpdateDTO = TestUtil.createPostUpdateDTO();
         String data = new ObjectMapper().writeValueAsString(postUpdateDTO);
 
-        mockMvc.perform(authorizedRequest("PUT", "/api/posts/" + post1.getId(), data)
+        mockMvc.perform(TestUtil.authorizedRequest("PUT", "/api/posts/" + post1.getId(), data)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(post1.getId()))
@@ -254,7 +214,7 @@ public class PostControllerTestIT {
         PostUpdateDTO postUpdateDTO = TestUtil.createPostUpdateDTO();
         String data = new ObjectMapper().writeValueAsString(postUpdateDTO);
 
-        mockMvc.perform(authorizedRequest("PUT", "/api/posts/" + 0, data)
+        mockMvc.perform(TestUtil.authorizedRequest("PUT", "/api/posts/" + 0, data)
                 )
                 .andExpect(status().isNotFound());
     }
@@ -262,11 +222,10 @@ public class PostControllerTestIT {
     @Test
     public void updatePost_PostExistButWrongObject_HTTPBadRequest() throws Exception {
         Post post1 = TestUtil.createAndSaveValidPost(user);
-        String token = obtainJwtToken(user, DEFAULT_PASSWORD);
         PostUpdateDTO postUpdateDTO = TestUtil.createPostUpdateDTO(null, null, true);
         String data = new ObjectMapper().writeValueAsString(postUpdateDTO);
 
-        mockMvc.perform(authorizedRequest("PUT", "/api/posts/" + post1.getId(), data))
+        mockMvc.perform(TestUtil.authorizedRequest("PUT", "/api/posts/" + post1.getId(), data))
                 .andExpect(status().isBadRequest());
     }
 
@@ -275,7 +234,7 @@ public class PostControllerTestIT {
         PostUpdateDTO postUpdateDTO = TestUtil.createPostUpdateDTO();
         String data = new ObjectMapper().writeValueAsString(postUpdateDTO);
 
-        mockMvc.perform(authorizedRequest("PUT", "/api/posts/" + 0, data))
+        mockMvc.perform(TestUtil.authorizedRequest("PUT", "/api/posts/" + 0, data))
                 .andExpect(status().isNotFound());
     }
 
@@ -286,7 +245,7 @@ public class PostControllerTestIT {
         PostUpdateDTO postUpdateDTO = TestUtil.createPostUpdateDTO();
         String data = new ObjectMapper().writeValueAsString(postUpdateDTO);
 
-        mockMvc.perform(authorizedRequest("PUT", "/api/posts/" + post.getId(), data))
+        mockMvc.perform(TestUtil.authorizedRequest("PUT", "/api/posts/" + post.getId(), data))
                 .andExpect(status().isForbidden());
     }
 
@@ -294,7 +253,7 @@ public class PostControllerTestIT {
     public void deletePost_RightId_PostDeleted() throws Exception {
         Post post = TestUtil.createAndSaveValidPost(user);
 
-        mockMvc.perform(authorizedRequest("DELETE", "/api/posts/" + post.getId()))
+        mockMvc.perform(TestUtil.authorizedRequest("DELETE", "/api/posts/" + post.getId()))
                 .andExpect(status().isOk());
     }
 
@@ -303,13 +262,13 @@ public class PostControllerTestIT {
         User postOwner = TestUtil.createAndSaveValidUser(DEFAULT_PASSWORD);
         Post post = TestUtil.createAndSaveValidPost(postOwner);
 
-        mockMvc.perform(authorizedRequest("DELETE", "/api/posts/" + post.getId()))
+        mockMvc.perform(TestUtil.authorizedRequest("DELETE", "/api/posts/" + post.getId()))
                 .andExpect(status().isForbidden());
     }
 
     @Test
     public void deletePost_PostNotExist_HTTPNotFound() throws Exception {
-        mockMvc.perform(authorizedRequest("DELETE", "/api/posts/" + 0))
+        mockMvc.perform(TestUtil.authorizedRequest("DELETE", "/api/posts/" + 0))
                 .andExpect(status().isNotFound());
     }
 }

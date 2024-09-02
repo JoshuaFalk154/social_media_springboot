@@ -1,20 +1,71 @@
 package com.social_media_springboot.social_media_springboot;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
 import com.social_media_springboot.social_media_springboot.DTO.PostUpdateDTO;
 import com.social_media_springboot.social_media_springboot.DTO.UserCreateDTO;
 import com.social_media_springboot.social_media_springboot.DTO.UserLoginDTO;
 import com.social_media_springboot.social_media_springboot.configs.StaticContextInitializer;
+import com.social_media_springboot.social_media_springboot.entities.Like;
 import com.social_media_springboot.social_media_springboot.entities.Post;
 import com.social_media_springboot.social_media_springboot.entities.User;
 import com.social_media_springboot.social_media_springboot.factory.PostFactory;
 import com.social_media_springboot.social_media_springboot.factory.UserFactory;
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-@RequiredArgsConstructor
+
 @Service
 public class TestUtil {
+
+    @Getter
+    private static final String DEFAULT_PASSWORD = "password123";
+    @Setter
+    private static String token;
+
+
+    public static String obtainJwtToken(User user, String password, MockMvc mockMvc) throws Exception {
+        String userLoginJson = TestUtil.createUserLoginJson(user.getEmail(), password);
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(userLoginJson))
+                .andReturn();
+        String response = result.getResponse().getContentAsString();
+        return JsonPath.read(response, "$.token");
+    }
+
+    public static String obtainJwtToken(User user, MockMvc mockMvc) throws Exception {
+        return obtainJwtToken(user, DEFAULT_PASSWORD, mockMvc);
+    }
+
+    public static MockHttpServletRequestBuilder authorizedRequest(String method, String url, String data) {
+        MockHttpServletRequestBuilder requestBuilder = switch (method) {
+            case "GET" -> MockMvcRequestBuilders.get(url);
+            case "POST" -> MockMvcRequestBuilders.post(url);
+            case "PUT" -> MockMvcRequestBuilders.put(url);
+            case "DELETE" -> MockMvcRequestBuilders.delete(url);
+            default -> throw new IllegalArgumentException("Unsupported HTTP method: " + method);
+        };
+
+        requestBuilder.header("Authorization", "Bearer " + token);
+
+        if (data != null) {
+            requestBuilder.contentType(MediaType.APPLICATION_JSON)
+                    .content(data);
+        }
+        return requestBuilder;
+    }
+
+    public static MockHttpServletRequestBuilder authorizedRequest(String method, String url) {
+        return authorizedRequest(method, url, null);
+    }
 
 
     public static User createAndSaveValidUser(String password) {
@@ -63,6 +114,14 @@ public class TestUtil {
                 .content(content)
                 .isPublic(isPublic)
                 .build();
+    }
+
+    public static Like createAndSaveValidLike(User user, Post post) {
+        Like like = Like.builder().
+                user(user)
+                .post(post)
+                .build();
+        return StaticContextInitializer.getLikeRepository().save(like);
     }
 
 
