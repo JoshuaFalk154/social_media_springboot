@@ -12,7 +12,6 @@ import com.social_media_springboot.social_media_springboot.entities.User;
 import com.social_media_springboot.social_media_springboot.factory.PostFactory;
 import com.social_media_springboot.social_media_springboot.factory.UserFactory;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,8 +25,8 @@ public class TestUtil {
 
     @Getter
     private static final String DEFAULT_PASSWORD = "password123";
-    @Setter
-    private static String token;
+//    @Setter
+//    private static String token;
 
 
     public static String obtainJwtToken(User user, String password, MockMvc mockMvc) throws Exception {
@@ -45,7 +44,7 @@ public class TestUtil {
         return obtainJwtToken(user, DEFAULT_PASSWORD, mockMvc);
     }
 
-    public static MockHttpServletRequestBuilder authorizedRequest(String method, String url, String data) {
+    public static MockHttpServletRequestBuilder authorizedRequest(String method, String url, String token, String data) {
         MockHttpServletRequestBuilder requestBuilder = switch (method) {
             case "GET" -> MockMvcRequestBuilders.get(url);
             case "POST" -> MockMvcRequestBuilders.post(url);
@@ -63,8 +62,8 @@ public class TestUtil {
         return requestBuilder;
     }
 
-    public static MockHttpServletRequestBuilder authorizedRequest(String method, String url) {
-        return authorizedRequest(method, url, null);
+    public static MockHttpServletRequestBuilder authorizedRequest(String method, String url, String token) {
+        return authorizedRequest(method, url, token, null);
     }
 
 

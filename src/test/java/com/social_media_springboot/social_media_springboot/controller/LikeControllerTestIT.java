@@ -37,7 +37,7 @@ public class LikeControllerTestIT {
     public void setup() throws Exception {
         this.user = TestUtil.createAndSaveValidUser(TestUtil.getDEFAULT_PASSWORD());
         this.token = TestUtil.obtainJwtToken(user, mockMvc);
-        TestUtil.setToken(this.token);
+        //TestUtil.setToken(this.token);
     }
 
     @Test
@@ -46,7 +46,7 @@ public class LikeControllerTestIT {
         LikeDTO likeDTO = LikeDTO.builder().postId(post.getId()).build();
         String data = new ObjectMapper().writeValueAsString(likeDTO);
 
-        mockMvc.perform(TestUtil.authorizedRequest("POST", "/api/likes", data))
+        mockMvc.perform(TestUtil.authorizedRequest("POST", "/api/likes", token, data))
                 .andExpect(status().isOk())
                 .andExpect(content().string("You liked Post with id " + post.getId()));
     }
@@ -58,7 +58,7 @@ public class LikeControllerTestIT {
 
         LikeDTO likeDTO = LikeDTO.builder().postId(post.getId()).build();
         String data = new ObjectMapper().writeValueAsString(likeDTO);
-        mockMvc.perform(TestUtil.authorizedRequest("POST", "/api/likes", data))
+        mockMvc.perform(TestUtil.authorizedRequest("POST", "/api/likes", token, data))
                 .andExpect(status().isOk())
                 .andExpect(content().string("You unliked Post with id " + post.getId()));
     }
@@ -70,7 +70,7 @@ public class LikeControllerTestIT {
         LikeDTO likeDTO = LikeDTO.builder().postId(post.getId()).build();
         String data = new ObjectMapper().writeValueAsString(likeDTO);
 
-        mockMvc.perform(TestUtil.authorizedRequest("POST", "/api/likes", data))
+        mockMvc.perform(TestUtil.authorizedRequest("POST", "/api/likes", token, data))
                 .andExpect(status().isForbidden());
     }
 
@@ -79,7 +79,7 @@ public class LikeControllerTestIT {
         LikeDTO likeDTO = LikeDTO.builder().postId(0L).build();
         String data = new ObjectMapper().writeValueAsString(likeDTO);
 
-        mockMvc.perform(TestUtil.authorizedRequest("POST", "/api/likes", data))
+        mockMvc.perform(TestUtil.authorizedRequest("POST", "/api/likes", token, data))
                 .andExpect(status().isNotFound());
     }
 
