@@ -8,6 +8,7 @@ import com.social_media_springboot.social_media_springboot.entities.Post;
 import com.social_media_springboot.social_media_springboot.entities.User;
 import com.social_media_springboot.social_media_springboot.mapper.PostMapper;
 import com.social_media_springboot.social_media_springboot.services.PostService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +22,13 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@Tag(name = "Post")
 public class PostController {
 
     private final PostService postService;
     private final PostMapper postMapper;
 
+    
     @PostMapping("/posts")
     public ResponseEntity<PostCreatedResponseDTO> createPost(@Valid @RequestBody PostCreateDTO postCreateDTO, @AuthenticationPrincipal User currentUser) {
         Post post = postService.createPost(postCreateDTO, currentUser);
