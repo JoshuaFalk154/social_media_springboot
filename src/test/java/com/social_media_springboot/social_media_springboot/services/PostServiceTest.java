@@ -373,7 +373,7 @@ public class PostServiceTest {
 
         PostService postService1 = Mockito.spy(postService);
 
-        doReturn(Optional.of(post)).when(postRepository).findById(post.getId());
+        doReturn(post).when(postService1).getPostById(post.getId());
         doReturn(true).when(postService1).isOwner(user, post);
 
 
@@ -389,7 +389,7 @@ public class PostServiceTest {
 
         PostService postService1 = Mockito.spy(postService);
 
-        doReturn(Optional.of(post)).when(postRepository).findById(post.getId());
+        doReturn(post).when(postService1).getPostById(post.getId());
         doReturn(false).when(postService1).isOwner(user, post);
 
         Assertions.assertThatThrownBy(() -> postService1.validatePostExistenceAndOwnership(user, post.getId()))
@@ -402,7 +402,7 @@ public class PostServiceTest {
 
         PostService postService1 = Mockito.spy(postService);
 
-        doReturn(Optional.empty()).when(postRepository).findById(any(Long.class));
+        doThrow(new ResourceNotFoundException("Some message")).when(postService1).getPostById(1L);
 
         Assertions.assertThatThrownBy(() -> postService1.validatePostExistenceAndOwnership(user, 1L))
                 .isInstanceOf(ResourceNotFoundException.class);
