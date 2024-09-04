@@ -51,8 +51,15 @@ public class PostService {
                 .toList();
     }
 
+
     public Post getPostById(User currentUser, Long id) {
         return validatePostExistenceAndOwnership(currentUser, id);
+    }
+
+    // TODO test
+    public Post getPostById(Long id) {
+        return postRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Post with id " + id + " does not exist"));
     }
 
     public boolean isOwner(User user, Post post) {
@@ -76,8 +83,7 @@ public class PostService {
      */
     // TODO test
     public Post updatePostById(Long id, PostUpdateDTO postDTO) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Post with id " + id + " does not exist"));
+        Post post = getPostById(id);
 
         post.setTitle(postDTO.getTitle());
         post.setContent(postDTO.getContent());
@@ -117,14 +123,11 @@ public class PostService {
     }
 
     public Post validatePostExistenceAndOwnership(User user, Long id) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + id));
+        Post post = getPostById(id);
 
         if (!isOwner(user, post)) {
             throw new AccessDeniedException("User is not the owner of the post");
         }
         return post;
     }
-
-
 }
