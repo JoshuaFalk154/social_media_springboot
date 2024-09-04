@@ -175,7 +175,7 @@ public class PostServiceTest {
     }
 
     @Test
-    public void updatePostById_ValidUpdate_ReturnUpdatedPost() {
+    public void updatePostById_ValidUpdate_ReturnUpdatedPostById() {
         User user = UserFactory.createValidUserWithId(1L);
         Post post = PostFactory.createPost(1L, user, null);
         PostUpdateDTO postUpdateDTO = PostUpdateDTO.builder()
@@ -197,7 +197,7 @@ public class PostServiceTest {
     }
 
     @Test
-    public void updatePostById_PostNotFound_updatePostById_PostNotFound_ThrowsResourceNotFoundException() {
+    public void updatePostById_PostNotFound_updatePostById_PostByIdNotFound_ThrowsResourceNotFoundException() {
         User user = UserFactory.createValidUserWithId(1L);
         PostUpdateDTO postUpdateDTO = PostUpdateDTO.builder().build();
 
@@ -211,7 +211,7 @@ public class PostServiceTest {
     }
 
     @Test
-    public void updatePostById_UserNotOwner_ThrowsAccessDeniedException() {
+    public void updatePostByIdById_UserNotOwner_ThrowsAccessDeniedException() {
         User user = UserFactory.createValidUserWithId(1L);
         Long postId = 1L;
         PostUpdateDTO postUpdateDTO = PostUpdateDTO.builder().build();

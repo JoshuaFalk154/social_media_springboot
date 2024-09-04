@@ -59,16 +59,32 @@ public class PostService {
         return post != null && user.equals(post.getOwner());
     }
 
-    public Post updatePostById(User currentUser, Long id, PostUpdateDTO postDTO) {
+    /**
+     * Updates a post while checking if the current user is the owner of the post
+     */
+    public Post updatePostById(User currentUser, Long id, PostUpdateDTO postUpdateDTO) {
         Post post = validatePostExistenceAndOwnership(currentUser, id);
+
+        post.setTitle(postUpdateDTO.getTitle());
+        post.setContent(postUpdateDTO.getContent());
+        post.setPublic(postUpdateDTO.isPublic());
+        return postRepository.save(post);
+    }
+
+    /**
+     * Updates a post, assuming the caller has the authority to perform the update
+     */
+    // TODO test
+    public Post updatePostById(Long id, PostUpdateDTO postDTO) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Post with id " + id + " does not exist"));
 
         post.setTitle(postDTO.getTitle());
         post.setContent(postDTO.getContent());
         post.setPublic(postDTO.isPublic());
-        postRepository.save(post);
-
-        return post;
+        return postRepository.save(post);
     }
+
 
     public void deletePost(User currentUser, Long id) {
         Post post = validatePostExistenceAndOwnership(currentUser, id);

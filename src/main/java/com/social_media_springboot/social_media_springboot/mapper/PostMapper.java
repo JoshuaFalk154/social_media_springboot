@@ -34,7 +34,8 @@ public class PostMapper {
                 .build();
     }
 
-    public PostResponseDTO postToRequestPostDTO(Post post) {
+    // renamed
+    public PostResponseDTO postToPostResponseDTO(Post post) {
         return PostResponseDTO.builder()
                 .id(post.getId())
                 .title(post.getTitle())

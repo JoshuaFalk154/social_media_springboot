@@ -54,7 +54,7 @@ public class PostMapperTest {
     }
 
     @Test
-    public void postToRequestPostDTO_Post_ReturnsRightObject() {
+    public void postToRequestPostDTO_Post_Response_ReturnsRightObject() {
         User user = UserFactory.createValidUserWithId(1L);
         Post post = PostFactory.createValidPostWithId(user, null);
         post.setCreatedAt(Date.from(Instant.from(Instant.now())));
@@ -86,7 +86,7 @@ public class PostMapperTest {
         doReturn(userNestedDTO).when(userMapper).userToNestedUserDTO(eq(user));
         doReturn(likeNestedDTO).when(likeMapper).likeToLikeNestedDTO(any(Like.class));
 
-        PostResponseDTO actualResult = postMapper.postToRequestPostDTO(post);
+        PostResponseDTO actualResult = postMapper.postToPostResponseDTO(post);
 
         Assertions.assertThat(actualResult.getId()).isEqualTo(expectedResult.getId());
         Assertions.assertThat(actualResult.isPublic()).isEqualTo(expectedResult.isPublic());
@@ -112,6 +112,6 @@ public class PostMapperTest {
         Assertions.assertThat(actualResult.getTitle()).isEqualTo(expectedResult.getTitle());
         Assertions.assertThat(actualResult.getContent()).isEqualTo(expectedResult.getContent());
         Assertions.assertThat(actualResult.getId()).isEqualTo(expectedResult.getId());
-        
+
     }
 }

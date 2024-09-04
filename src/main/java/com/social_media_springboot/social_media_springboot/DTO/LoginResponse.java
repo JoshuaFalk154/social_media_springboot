@@ -1,7 +1,5 @@
 package com.social_media_springboot.social_media_springboot.DTO;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -10,9 +8,9 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class LoginResponse {
-    @NotNull
-    @NotBlank
+    //@NotNull
+    //@NotBlank
     private String token;
-    @NotNull
+    //@NotNull
     private long expiresIn;
 }

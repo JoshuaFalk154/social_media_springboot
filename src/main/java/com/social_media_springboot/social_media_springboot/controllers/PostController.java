@@ -28,7 +28,7 @@ public class PostController {
     private final PostService postService;
     private final PostMapper postMapper;
 
-    
+
     @PostMapping("/posts")
     public ResponseEntity<PostCreatedResponseDTO> createPost(@Valid @RequestBody PostCreateDTO postCreateDTO, @AuthenticationPrincipal User currentUser) {
         Post post = postService.createPost(postCreateDTO, currentUser);
@@ -43,7 +43,7 @@ public class PostController {
             @AuthenticationPrincipal User currentUser
     ) {
         List<PostResponseDTO> result = postService.queryPosts(postId, title, currentUser).stream()
-                .map(postMapper::postToRequestPostDTO)
+                .map(postMapper::postToPostResponseDTO)
                 .toList();
 
         return ResponseEntity.ok(result);
@@ -55,13 +55,13 @@ public class PostController {
             @AuthenticationPrincipal User currentUser
 
     ) {
-        PostResponseDTO postDTO = postMapper.postToRequestPostDTO(postService.getPostById(currentUser, id));
+        PostResponseDTO postDTO = postMapper.postToPostResponseDTO(postService.getPostById(currentUser, id));
         return ResponseEntity.ok(postDTO);
     }
 
     @PutMapping("/posts/{id}")
     public ResponseEntity<PostResponseDTO> updatePost(@PathVariable Long id, @AuthenticationPrincipal User currentUser, @Valid @RequestBody PostUpdateDTO post) {
-        PostResponseDTO postDTO = postMapper.postToRequestPostDTO(postService.updatePostById(currentUser, id, post));
+        PostResponseDTO postDTO = postMapper.postToPostResponseDTO(postService.updatePostById(currentUser, id, post));
 
         return ResponseEntity.ok(postDTO);
     }
