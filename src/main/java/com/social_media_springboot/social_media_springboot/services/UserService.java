@@ -5,6 +5,7 @@ import com.social_media_springboot.social_media_springboot.DTO.UserLoginDTO;
 import com.social_media_springboot.social_media_springboot.entities.User;
 import com.social_media_springboot.social_media_springboot.exceptions.ResourceNotFoundException;
 import com.social_media_springboot.social_media_springboot.repositories.UserRepository;
+import com.social_media_springboot.social_media_springboot.security.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.*;
@@ -20,12 +21,26 @@ public class UserService {
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
 
-
+    // TODO added role
     public User signup(UserCreateDTO userCreateDTO) {
         User user = User.builder()
                 .nickname(userCreateDTO.getUsername())
                 .email(userCreateDTO.getEmail())
                 .password(passwordEncoder.encode(userCreateDTO.getPassword()))
+                .role(Role.USER)
+                .build();
+
+
+        return userRepository.save(user);
+    }
+
+    // TODO not tested
+    public User signupWithRole(UserCreateDTO userCreateDTO, Role role) {
+        User user = User.builder()
+                .nickname(userCreateDTO.getUsername())
+                .email(userCreateDTO.getEmail())
+                .password(passwordEncoder.encode(userCreateDTO.getPassword()))
+                .role(role)
                 .build();
 
 

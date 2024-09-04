@@ -1,5 +1,6 @@
 package com.social_media_springboot.social_media_springboot.entities;
 
+import com.social_media_springboot.social_media_springboot.security.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -42,6 +43,8 @@ public class User implements UserDetails {
     @Column(updatable = false, name = "created_at")
     private Date createdAt;
 
+    private Role role;
+
 
     @UpdateTimestamp
     @Column(name = "updated_at")
@@ -50,7 +53,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return role.getPermissions();
     }
 
     @Override
