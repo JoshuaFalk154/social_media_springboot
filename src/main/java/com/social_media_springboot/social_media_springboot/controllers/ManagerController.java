@@ -6,6 +6,7 @@ import com.social_media_springboot.social_media_springboot.mapper.PostMapper;
 import com.social_media_springboot.social_media_springboot.services.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ public class ManagerController {
     private final PostMapper postMapper;
 
     @GetMapping("/posts/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     public ResponseEntity<PostResponseDTO> getPostById(@PathVariable Long id) {
         Post post = postService.getPostById(id);
 
