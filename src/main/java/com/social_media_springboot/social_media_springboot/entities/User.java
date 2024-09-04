@@ -43,7 +43,8 @@ public class User implements UserDetails {
     @Column(updatable = false, name = "created_at")
     private Date createdAt;
 
-    private Role role;
+    @Builder.Default
+    private Role role = Role.USER;
 
 
     @UpdateTimestamp
