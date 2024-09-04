@@ -26,12 +26,6 @@ public class AdminController {
     private final PostService postService;
     private final PostMapper postMapper;
 
-    @PreAuthorize("hasAuthority('admin:read') or hasRole('ADMIN')")
-
-    @GetMapping("/users")
-    public String testAuthority() {
-        return "hello!";
-    }
 
     @PutMapping("/users/{id}")
     @PreAuthorize("hasRole('ADMIN')")
@@ -50,10 +44,19 @@ public class AdminController {
     }
 
     @PutMapping("/posts/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PostResponseDTO> updatePost(@PathVariable Long id, @Valid PostUpdateDTO postUpdateDTO) {
         Post post = postService.updatePostById(id, postUpdateDTO);
 
         return ResponseEntity.ok(postMapper.postToPostResponseDTO(post));
+    }
+
+    @GetMapping("/users/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('admin:read')")
+    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
+        User user = userService.getUserById(id);
+
+        return ResponseEntity.ok(userMapper.userToUserResponseDTO(user));
     }
 
 
