@@ -8,6 +8,7 @@ import com.social_media_springboot.social_media_springboot.entities.User;
 import com.social_media_springboot.social_media_springboot.mapper.UserMapper;
 import com.social_media_springboot.social_media_springboot.services.JwtService;
 import com.social_media_springboot.social_media_springboot.services.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Tag(name = "Authentication")
 public class AuthenticationController {
 
     private final UserService userService;
@@ -28,7 +30,7 @@ public class AuthenticationController {
     @PostMapping("/signup")
     public ResponseEntity<UserResponseDTO> register(@Valid @RequestBody UserCreateDTO userCreateDTO) {
         userService.validateUserNotAlreadyExists(userCreateDTO);
-        
+
         User registeredUser = userService.signup(userCreateDTO);
 
         return ResponseEntity.ok(userMapper.userToUserResponseDTO(registeredUser));

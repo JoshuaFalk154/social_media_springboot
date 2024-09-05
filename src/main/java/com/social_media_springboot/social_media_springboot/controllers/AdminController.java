@@ -10,6 +10,8 @@ import com.social_media_springboot.social_media_springboot.mapper.PostMapper;
 import com.social_media_springboot.social_media_springboot.mapper.UserMapper;
 import com.social_media_springboot.social_media_springboot.services.PostService;
 import com.social_media_springboot.social_media_springboot.services.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor
+@Tag(name = "Admin")
 public class AdminController {
 
     private final UserService userService;
@@ -29,6 +32,7 @@ public class AdminController {
 
     @PutMapping("/users/{id}")
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Update User")
     public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @Valid UserUpdateDTO userUpdateDTO) {
         User updatedUseruser = userService.updateUser(userUpdateDTO, id);
 
@@ -37,6 +41,7 @@ public class AdminController {
 
     @DeleteMapping("/users/{id}")
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Delete User")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
 
@@ -45,6 +50,7 @@ public class AdminController {
 
     @PutMapping("/posts/{id}")
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Update Post")
     public ResponseEntity<PostResponseDTO> updatePost(@PathVariable Long id, @Valid PostUpdateDTO postUpdateDTO) {
         Post post = postService.updatePostById(id, postUpdateDTO);
 
@@ -53,6 +59,7 @@ public class AdminController {
 
     @GetMapping("/users/{id}")
     @PreAuthorize("hasRole('ADMIN') or hasAuthority('admin:read')")
+    @Operation(summary = "Get User by id")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
         User user = userService.getUserById(id);
 
