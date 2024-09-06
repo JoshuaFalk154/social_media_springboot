@@ -2,6 +2,7 @@ package com.social_media_springboot.social_media_springboot.configs;
 
 
 import com.social_media_springboot.social_media_springboot.services.JwtService;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -63,10 +65,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             filterChain.doFilter(request, response);
+        } catch (UsernameNotFoundException e) {
+            // return HTTPNotFound
+            generateHTTPResponse(response, 404, "Username does not exist.");
+        } catch (AccessDeniedException e) {
+            // return HTTPForbidden
+            generateHTTPResponse(response, 403, "Access denied, please check your credentials.");
+        } catch (SignatureException e) {
+            generateHTTPResponse(response, 400, "JWT signature does not match locally computed signature, please check your JWT-Token.");
         } catch (Exception e) {
-            request.setAttribute("javax.servlet.error.exception", e);
-            request.getRequestDispatcher("/error").forward(request, response);
+            // return HTTPInternalServerError
+            generateHTTPResponse(response, 500, "An error occurred while processing your request.");
         }
 
+    }
+
+    private void generateHTTPResponse(HttpServletResponse response, int status, String text) throws IOException {
+        response.setStatus(status);
+        response.setContentType("text/plain");
+        response.getWriter().write(text);
     }
 }
