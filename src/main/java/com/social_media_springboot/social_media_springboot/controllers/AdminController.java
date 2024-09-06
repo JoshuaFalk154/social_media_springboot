@@ -33,7 +33,7 @@ public class AdminController {
     @PutMapping("/users/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Update User")
-    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @Valid UserUpdateDTO userUpdateDTO) {
+    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO userUpdateDTO) {
         User updatedUseruser = userService.updateUser(userUpdateDTO, id);
 
         return ResponseEntity.ok(userMapper.userToUserResponseDTO(updatedUseruser));
@@ -51,7 +51,7 @@ public class AdminController {
     @PutMapping("/posts/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Update Post")
-    public ResponseEntity<PostResponseDTO> updatePost(@PathVariable Long id, @Valid PostUpdateDTO postUpdateDTO) {
+    public ResponseEntity<PostResponseDTO> updatePost(@PathVariable Long id, @Valid @RequestBody PostUpdateDTO postUpdateDTO) {
         Post post = postService.updatePostById(id, postUpdateDTO);
 
         return ResponseEntity.ok(postMapper.postToPostResponseDTO(post));

@@ -15,7 +15,9 @@ import lombok.experimental.SuperBuilder;
 public class UserUpdateDTO {
     @Email
     private String email;
+
     private String nickname;
+    
     private String password;
 }
 

@@ -73,6 +73,12 @@ public class TestUtil {
         return StaticContextInitializer.getUserRepository().save(user);
     }
 
+    public static User createAndSaveValidUser() {
+        User user = UserFactory.createValidUser();
+        user.setPassword(StaticContextInitializer.getEncoder().encode(DEFAULT_PASSWORD));
+        return StaticContextInitializer.getUserRepository().save(user);
+    }
+
 
     public static String createUserCreateJson(String email, String username, String password) throws Exception {
         UserCreateDTO userCreateDTO = UserCreateDTO.builder()
